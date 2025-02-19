@@ -148,5 +148,146 @@ int main() {
 
 
 
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+
+
+struct Point{
+    int x;
+    int y;
+};
+
+struct Circle{
+    int Radius;
+    Point center;
+};
+
+
+//plostinata e so formula R^2 *PI
+
+int main() {
+
+    Circle c[100];
+
+        double p=0;
+        double max=0;
+        int maxindex=0;
+    int n;
+    cin>>n;
+
+ for(int i=0;i<n;i++){
+
+     cin>>c[i].center.x>>c[i].center.y;
+     cin>>c[i].Radius;
+
+     p=c[i].Radius*c[i].Radius*3.14;
+     if(max<p){
+         max=p;
+         maxindex=i;
+     }
+
+ }
+    cout<<"Largest circle has area of: "<<max<<" with centre: ("<<c[maxindex].center.x<<","<<c[maxindex].center.y<<")";
+
+    return 0;
+}
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+VO C
+
+#include <stdio.h>
+
+struct point {
+    int x;
+    int y;
+};
+
+typedef struct point tocka;
+
+struct circle {
+    tocka centar;
+    int radius;
+};
+
+typedef struct circle krug;
+
+int main() {
+    int x1;
+    int y1;
+    int r1;
+
+    int n;
+    tocka centar = {0,0};
+    krug najgolem = {centar,0};
+
+    scanf("%d",&n);
+    for (int i = 0; i < n; ++i) {
+        scanf("%d %d %d",&x1,&y1,&r1);
+        tocka p1 = {x1,  y1};
+        krug c1 = {p1,  r1};
+
+        if(c1.radius>najgolem.radius){
+            najgolem=c1;
+        }
+    }
+
+    printf("Largest circle has area of: %.2f with centre: (%d,%d)\n",najgolem.radius*najgolem.radius*3.14,najgolem.centar.x,najgolem.centar.y);
+
+
+    return 0;
+}
+
+
+
+3.
+
+За програмски јазик да се употреби C.
+
+Да се креира структура Employee во која се чуваат податоци за еден вработен. За вработениот се чуваат информации за името на вработениот (низа од карактери), матичен број (ЕМБГ) на вработениот(низа од карактери), име на одделот во кој што работи (низа од карактери), плата (цел број).
+
+Потоа, да се креира структура Company во која се чуваат податоци за името на компанијата (низа од карактери), низа од вработени во компанијата и број на вработени.
+
+Да се направи функција:
+
+void printEmployeesBelowAverageSalary(Company *comp, int numCompanies)
+
+која што за секоја компанија, ќе ги испечати сите вработени чија што плата е пониска од просекот на платите на сите вработени во таа компанија.
+
+Да се направи функција: 
+
+void printHighestSalaryEmployee(Company *comp, int numCompanies, char *department) 
+
+кoja што за секоја компанија ќе го испечати вработениот со највисока плата во дадениот оддел.
+
+Напомена: Прво од тастатура се чита бројот на компании, потоа компаниите (името и бројот на вработени), а потоа податоците за нивните вработени соодветно, a на крај се чита одделот кој што ќе биде искористен во printHighestSalaryEmployee функцијата.
+
+For example:
+
+Input	Result
+2
+Apple
+3
+Vlatko 111111 IT 150000
+Nikola 222222 IT 125000
+Marko 333333 Accounting 50000
+Google
+2
+Stefan 444444 IT 150000
+John 555555 HR 60000
+IT
+Employees with salaries below the average:
+Marko 333333 Accounting 50000
+John 555555 HR 60000
+Employees with highest salaries for given department: 
+Vlatko 111111 IT 150000
+Stefan 444444 IT 150000
+
+
+
+
 
 
