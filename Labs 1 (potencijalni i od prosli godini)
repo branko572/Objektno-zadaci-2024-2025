@@ -245,6 +245,8 @@ int main() {
 
 3.
 
+VNIMANIE SO CHAR SE RESAVA NEMOJ DA ISKORISTIS STRING. TEST CASES NA SITE NEMA DA BIDE IST
+
 За програмски јазик да се употреби C.
 
 Да се креира структура Employee во која се чуваат податоци за еден вработен. За вработениот се чуваат информации за името на вработениот (низа од карактери), матичен број (ЕМБГ) на вработениот(низа од карактери), име на одделот во кој што работи (низа од карактери), плата (цел број).
@@ -288,6 +290,164 @@ Stefan 444444 IT 150000
 
 
 
+
+#include <iostream>
+#include <cmath>
+#include <cstring>
+#include <iomanip>
+
+using namespace std;
+
+typedef struct {
+    char name[50];
+    char embg[20];
+    char oddel[50];
+    int plata;
+} Employee;
+
+typedef struct {
+    char name[50];
+    Employee employee[100];
+    int numEmployees;
+} Company;
+
+void printEmployeesBelowAverageSalary(Company *comp, int numCompanies) {
+    cout << "Employees with salaries below the average:" << endl;
+    for (int i = 0; i < numCompanies; ++i) {
+        double p;
+        int sum = 0;
+        int num_employees = 0;
+
+        for (int j = 0; j < comp[i].numEmployees; ++j) {
+            sum += comp[i].employee[j].plata;
+            num_employees++;
+        }
+        p = (double)sum / num_employees;
+
+        for (int j = 0; j < comp[i].numEmployees; j++) {
+            if (comp[i].employee[j].plata < p) {
+                cout << comp[i].employee[j].name << " ";
+                cout << comp[i].employee[j].embg << " ";
+                cout << comp[i].employee[j].oddel << " ";
+                cout << comp[i].employee[j].plata << endl;
+            }
+        }
+    }
+}
+
+void printHighestSalaryEmployee(Company *comp, int numCompanies, char *department) {
+    cout << "Employees with highest salaries for given department:" << endl;
+    for (int i = 0; i < numCompanies; i++) {
+        Employee highemp;
+        int highplata = -1;
+
+        for (int j = 0; j < comp[i].numEmployees; j++) {
+            if (strcmp(comp[i].employee[j].oddel, department) == 0 && comp[i].employee[j].plata > highplata) {
+                highemp = comp[i].employee[j];
+                highplata = comp[i].employee[j].plata;
+            }
+        }
+
+        cout << highemp.name << " " << highemp.embg << " " << highemp.oddel << " " << highemp.plata << endl;
+    }
+}
+
+int main() {
+    Employee e[100];
+    Company c[100];
+
+    int n;
+    cin >> n;
+
+    for (int i = 0; i < n; ++i) {
+        cin >> c[i].name >> c[i].numEmployees;
+        for (int j = 0; j < c[i].numEmployees; ++j) {
+            cin >> c[i].employee[j].name >> c[i].employee[j].embg >>
+                c[i].employee[j].oddel >> c[i].employee[j].plata;
+        }
+    }
+
+    char department[50];
+    cin >> department;
+
+    printEmployeesBelowAverageSalary(c, n);
+    printHighestSalaryEmployee(c, n, department);
+
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------
+
+
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_EMPLOYEES 100
+
+typedef struct {
+    char name[50];
+    char embg[14];
+    char department[50];
+    int salary;
+} Employee;
+
+typedef struct {
+    char name[50];
+    int num_employees;
+    Employee employees[MAX_EMPLOYEES];
+} Company;
+
+void printEmployeesBelowAverageSalary(Company *comp, int numCompanies) {
+    printf("Employees with salaries below the average:\n");
+    for (int i = 0; i < numCompanies; i++) {
+        int total_salary = 0, num_employees = 0;
+        double avg_salary;
+        for (int j = 0; j < comp[i].num_employees; j++) {
+            total_salary += comp[i].employees[j].salary;
+            num_employees++;
+        }
+        avg_salary = (double) total_salary / num_employees;
+        for (int j = 0; j < comp[i].num_employees; j++) {
+            if (comp[i].employees[j].salary < avg_salary) {
+                printf("%s %s %s %d\n", comp[i].employees[j].name, comp[i].employees[j].embg, comp[i].employees[j].department, comp[i].employees[j].salary);
+            }
+        }
+    }
+}
+
+void printHighestSalaryEmployee(Company *comp, int numCompanies, char *department) {
+    printf("Employees with highest salaries for given department:\n");
+    for (int i = 0; i < numCompanies; i++) {
+        Employee highest_employee;
+        int highest_salary = 0;
+        for (int j = 0; j < comp[i].num_employees; j++) {
+            if (strcmp(comp[i].employees[j].department, department) == 0 && comp[i].employees[j].salary > highest_salary) {
+                highest_employee = comp[i].employees[j];
+                highest_salary = comp[i].employees[j].salary;
+            }
+        }
+        printf("%s %s %s %d\n", highest_employee.name, highest_employee.embg, highest_employee.department, highest_employee.salary);
+    }
+}
+
+int main() {
+    int numCompanies;
+    scanf("%d", &numCompanies);
+    Company companies[numCompanies];
+    for (int i = 0; i < numCompanies; i++) {
+        scanf("%s %d", companies[i].name, &companies[i].num_employees);
+        for (int j = 0; j < companies[i].num_employees; j++) {
+            scanf("%s %s %s %d", companies[i].employees[j].name, companies[i].employees[j].embg, companies[i].employees[j].department, &companies[i].employees[j].salary);
+        }
+    }
+    char department[50];
+    scanf("%s", department);
+    printEmployeesBelowAverageSalary(companies, numCompanies);
+    printHighestSalaryEmployee(companies, numCompanies, department);
+    return 0;
+}
 
 
 
