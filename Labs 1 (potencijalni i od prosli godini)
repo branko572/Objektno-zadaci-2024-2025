@@ -1,0 +1,152 @@
+VO C++ SE SITE ZADACI RESENI
+
+1.
+За програмски јазик да се употреби C.
+
+Да се напише програма во која од стандарден влез се внесува бројот N (бројот на трансакции), а потоа N трансакциски сметки и како резултат ги печати идентификацискиот број и вкупната сума (со провизија) на сите трансакции платени со кредитна картичка. Во случај да нема трансакција платена со кредитна картичка да се испечати "No credit card transaction".
+
+Во структурата Трансакција (Transaction) треба да се чуваат следните информации:
+- Идентификациски број (int)
+- Платена сума (int)
+- Провизија (int)
+- Дали е платено со дебитна или кредитна картичка (0 - дебитна, 1 - кредитна)
+
+Ограничување: 0 < N < 100
+
+Структура на влезните податоци:
+N
+id1 sum1 commission1 type1
+...
+idn sumn Commissionn typen
+
+For example:
+
+Input	Result
+3
+1 100 10 0
+2 202 20 1
+3 10 1 1
+2 222
+3 11
+
+
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+
+typedef struct {
+    int id;
+    int sum;
+    int provision;
+    int paid;
+}Transaction;
+
+
+
+int main() {
+
+    Transaction t[100];
+
+    int n;
+    int totalsamount=0;
+        bool flag= false;
+    cin>>n;
+
+    for(int i=0;i<n;i++){
+        cin>>t[i].id>>t[i].sum>>t[i].provision>>t[i].paid;
+        if(t[i].paid==1){
+            flag= true;
+            totalsamount=t[i].sum+t[i].provision;
+            cout<<t[i].id<<" "<<totalsamount<<endl;
+        }
+
+    }
+    if(flag==false){
+        cout<<"No credit card transaction";
+
+    }
+
+    return 0;
+}
+
+------------------------------------------------------------------------
+
+VO C KAKO BILA RESENA: 
+
+
+#include <stdio.h>
+
+#define MAX_TRANSACTIONS 100
+
+typedef struct {
+    int id;
+    int amount;
+    int commission;
+    int payment_type;  // 0 - debit, 1 - credit
+} Transaction;
+
+int main() {
+    Transaction transactions[MAX_TRANSACTIONS];
+    int n;
+    int total_credit_amount = 0;
+
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d %d %d %d", &transactions[i].id, &transactions[i].amount, &transactions[i].commission, &transactions[i].payment_type);
+
+        if (transactions[i].payment_type == 1) {
+            total_credit_amount += transactions[i].amount + transactions[i].commission;
+        }
+    }
+
+    if (total_credit_amount > 0) {
+        for (int i = 0; i < n; i++) {
+            if (transactions[i].payment_type == 1) {
+                printf("%d %d\n", transactions[i].id, transactions[i].amount + transactions[i].commission);
+            }
+        }
+    } else {
+        printf("No credit card transaction\n");
+    }
+
+    return 0;
+}
+
+
+
+
+2.
+
+За програмски јазик да се употреби C.
+
+
+Од стандарден влез се внесува број n, број на кругови кои ќе се внесуваат, каде 0<n<100. Потоа во наредните n линии се внесуваат x и y кои го претставуваат центарот на кругот како и радиусот на кругот. На стандарден излез се печати плоштината и центарот само најголемиот круг (со најголема плоштина).
+
+
+
+Напомена: Доколку има повеќе кругови со иста плоштина се печати само првиот круг со таа плоштина.
+
+
+
+Во структурата Точка (Point) треба да се чуваат следните информации:
+
+-x координата (int)
+
+-y координата (int)
+
+
+
+Во структурата Круг (Circle) треба да се чуваат следните информации:
+
+-Центар (Point)
+
+-Радиус (int)
+
+
+
+
+
