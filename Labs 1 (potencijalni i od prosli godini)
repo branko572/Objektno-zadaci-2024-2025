@@ -450,4 +450,125 @@ int main() {
 }
 
 
+--------------------------------------------------------------------------------------------------------------------
+
+
+TOCNA VERZIJA BEZ DUPLIKATI PROSLITE BEA AKO ZADACATA BESE NE TOCNA
+
+
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+// Employee structure
+struct Employee {
+    char name[100];
+    char embg[100];
+    char oddel[100];
+    int plata;
+};
+
+// Company structure
+struct Company {
+    char name[100];
+    Employee *employee;  // Use a pointer instead of a large array
+    int numEmployees;
+};
+
+// Function to print employees with salaries below the average
+void printEmployeesBelowAverageSalary(Company *comp, int numCompanies) {
+    cout << "Employees with salaries below the average:" << endl;
+    for (int i = 0; i < numCompanies; ++i) {
+        double totalSalary = 0;
+
+        // Calculate total salary
+        for (int j = 0; j < comp[i].numEmployees; ++j) {
+            totalSalary += comp[i].employee[j].plata;
+        }
+
+        // Calculate average salary
+        double averageSalary = totalSalary / comp[i].numEmployees;
+
+        // Print employees with salary below the average
+        for (int j = 0; j < comp[i].numEmployees; ++j) {
+            if (comp[i].employee[j].plata < averageSalary) {
+                cout << comp[i].employee[j].name << " "
+                     << comp[i].employee[j].embg << " "
+                     << comp[i].employee[j].oddel << " "
+                     << comp[i].employee[j].plata << endl;
+            }
+        }
+    }
+}
+
+// Function to print the highest-paid employee in a given department
+void printHighestSalaryEmployee(Company *comp, int numCompanies, char *department) {
+    cout << "Employees with highest salaries for given department:" << endl;
+    for (int i = 0; i < numCompanies; ++i) {
+        Employee *highestPaidEmployee = nullptr;
+        int highestSalary = -1;
+
+        // Find highest-paid employee in the department
+        for (int j = 0; j < comp[i].numEmployees; ++j) {
+            if (strcmp(comp[i].employee[j].oddel, department) == 0 && 
+                comp[i].employee[j].plata > highestSalary) {
+                highestPaidEmployee = &comp[i].employee[j];
+                highestSalary = comp[i].employee[j].plata;
+            }
+        }
+
+        // Print the highest-paid employee if found
+        if (highestPaidEmployee) {
+            cout << highestPaidEmployee->name << " "
+                 << highestPaidEmployee->embg << " "
+                 << highestPaidEmployee->oddel << " "
+                 << highestPaidEmployee->plata << endl;
+        }
+    }
+}
+
+int main() {
+    int numCompanies;
+    cin >> numCompanies;
+
+    // Allocate memory for companies dynamically
+    Company *companies = new Company[numCompanies];
+
+    // Read company data
+    for (int i = 0; i < numCompanies; ++i) {
+        cin >> companies[i].name >> companies[i].numEmployees;
+        
+        // Allocate memory for employees dynamically
+        companies[i].employee = new Employee[companies[i].numEmployees];
+
+        for (int j = 0; j < companies[i].numEmployees; ++j) {
+            cin >> companies[i].employee[j].name
+                >> companies[i].employee[j].embg
+                >> companies[i].employee[j].oddel
+                >> companies[i].employee[j].plata;
+        }
+    }
+
+    // Read the department name
+    char department[100];
+    cin >> department;
+
+    // Function calls
+    printEmployeesBelowAverageSalary(companies, numCompanies);
+    printHighestSalaryEmployee(companies, numCompanies, department);
+
+    // Free allocated memory
+    for (int i = 0; i < numCompanies; ++i) {
+        delete[] companies[i].employee;
+    }
+    delete[] companies;
+
+    return 0;
+}
+
+
+
+
 
