@@ -585,8 +585,242 @@ void printCars(...)
 
 
 
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+struct Engine {
+    int horsepower;
+    int torque;
+};
+
+struct Car {
+    char Proizvod[100];
+    int godina;
+    Engine engine;
+};
+
+void printCars(Car cars[], int n) {
+  if(n<2){
+      cout<<"NEMA KOLI >:(((((((("<<endl;
+      return;
+  }
+
+      int min1=0, min2=-1;
+      for (int i = 0; i < n; ++i) {
+        if(cars[i].engine.horsepower<cars[min1].engine.horsepower){
+            min2=min1;
+            min1=i;
+        } else if(min2==-1||cars[i].engine.horsepower<cars[min2].engine.horsepower){
+            min2=i;
+        }
+      }
+
+      int selectedIndex;
+      if(cars[min1].engine.torque>=cars[min2].engine.torque){
+          selectedIndex=min1;
+      } else{
+          selectedIndex=min2;
+      }
+
+      cout<<cars[selectedIndex].Proizvod<<" "<<cars[selectedIndex].godina<<" "
+      <<cars[selectedIndex].engine.horsepower<<" "<<cars[selectedIndex].engine.torque<<endl;
 
 
 
 
 
+}
+
+int main() {
+    Car c[100];
+    int n;
+    cin >> n;
+
+    for (int i = 0; i < n; ++i) {
+        cin >> c[i].Proizvod >> c[i].godina >> c[i].engine.horsepower >> c[i].engine.torque;
+    }
+
+    printCars(c, n);
+    return 0;
+}
+
+
+
+Да се креира класа BasketballPlayer која ќе ги чува следните информации:
+
+    име на кошаркарот (низа од знаци не подолга од 20 карактери)
+    презиме на кошаркарот (низа од знаци не подолга од 20 карактери)
+    број на дрес (цел број)
+    поени од прв натпревар (цел број)
+    поени од втор натпревар (цел број)
+    поени од трет натпревар (цел број)
+
+Да се направат потребните методи за класата, како и метод за печатење на информации за кошаркарот во следен формат "Player: name surname with number: number has avg_pts points on average".
+
+Од стандарден влез се внесуваат име, презиме, број на дрес и поени за сите три натпревари за еден кошаркар.
+
+На стандарден излез се печатат информациите за кошаркарот.
+
+
+#include <iostream>
+#include <cstring>
+#include <cctype>
+#include <cmath>
+#include <fstream>
+using namespace std;
+class BasketballPlayer {
+    char name[20];
+    char surname[20];
+    int shirt_number;
+    int points_1;
+    int points_2;
+    int points_3;
+public:
+    BasketballPlayer(char *namee="", char *surnamee="", int shirt_numberr=0, int points_11=0, int points_22=0, int points_33=0) {
+        strcpy(name, namee);
+        strcpy(surname, surnamee);
+        this->shirt_number = shirt_numberr;
+        this->points_1 = points_11;
+        this->points_2 = points_22;
+        this->points_3 = points_33;
+    }
+    char* getName() {
+        return name;
+    }
+    char* getSurname() {
+        return surname;
+    }
+    int getShirtNumber() {
+        return shirt_number;
+    }
+    int getPoints1() {
+        return points_1;
+    }
+    int getPoints2() {
+        return points_2;
+    }
+    int getPoints3() {
+        return points_3;
+    }
+    void setName(char *namee) {
+        strcpy(name, namee);
+    }
+    void setSurname(char *surnamee) {
+        strcpy(surname, surnamee);
+    }
+    void setShirtNumber(int shirt_numberr) {
+        this->shirt_number = shirt_numberr;
+    }
+    void setPoints1(int points_11) {
+        this->points_1 = points_11;
+    }
+    void setPoints2(int points_22) {
+        this->points_2 = points_22;
+    }
+    void setPoints3(int points_33) {
+        this->points_3 = points_33;
+    }
+    double avg_pts() {
+        return (points_1 + points_2 + points_3) / 3;
+    }
+    void print() {
+        cout<<"Player: "<<name<<" "<<surname<<" with number: "<<shirt_number<<" has "<<avg_pts()<<" points on average"<<endl;
+    }
+};
+int main() {
+    char name[20];
+    char surname[20];
+    int shirt_number;
+    int points_1;
+    int points_2;
+    int points_3;
+    cin>>name>>surname>>shirt_number>>points_1>>points_2>>points_3;
+    BasketballPlayer basketballPlayer(name, surname, shirt_number, points_1, points_2, points_3);
+    basketballPlayer.print();
+    return 0;
+}
+
+
+
+
+
+Да се дефинира класа Country во која ќе се чуваат информации за:
+
+    name(низа од максимум 100 карактери) име на државата
+
+    capital(низа од максимум 100 карактери) главен град
+
+    area(децимален број) - површина во илјада km2
+
+    population(децимален број) - популација во милиони.
+
+Сите променливи внатре во класата треба да бидат приватни. Соодветно во рамките на класата да се дефинираат:
+
+    конструктор (без и со параметри)
+
+    деструктор
+
+    set методи
+
+    get методи
+
+Да се дефинираат следните методи во класата:
+
+    display() која што ќе ги печати информациите за сметката во следниот формат:
+
+Country: Guyana
+
+Capital: Georgetown
+
+Area: 214
+
+Population: 0.8
+
+Надвор од класата:
+
+    sortCountries(Country *countries, int n) која што ќе ги сортира државите растечки по нивната површина.
+
+ДА НЕ СЕ МЕНУВА MAIN ФУНКЦИЈАТА.
+
+int main() {
+    int n;
+    cin >> n;
+    Country countries[100];
+
+    char name[100];
+    char capital[100];
+    float area;
+    float population;
+
+    for (int i = 0; i < n-1; i++)  {
+        cin>>name;
+        cin >> capital;
+        cin >> area;
+        cin>>population;
+
+        // testing constructor with arguments
+        countries[i] = Country(name, capital, area, population);
+
+    }
+
+
+    // testing set methods and display for last element
+    cin>>name;
+    cin >> capital;
+    cin >> area;
+    cin>>population;
+    countries[n-1].setName(name);
+    countries[n-1].setCapital(capital);
+    countries[n-1].setArea(area);
+    countries[n-1].setPopulation(population);
+
+    cout<<"-->Testing set methods and display()"<<endl;
+    countries[n-1].display();
+    cout<<endl;
+
+    cout<<"-->Testing sortCountries()"<<endl;
+    sortCountries(countries,n);
+    return 0;
+}
