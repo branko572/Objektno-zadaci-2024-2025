@@ -959,11 +959,13 @@ int main() {
 
 
 
-Да се креира структура Student во која се чуваат податоци за еден студент. За студентот се чуваат информации за името на студентот(низа од карактери), 
+Да се креира структура Student во која се чуваат податоци за еден студент.
+За студентот се чуваат информации за името на студентот(низа од карактери), 
 број на индекс на студентот, 
 број на курсеви кои ги слуша, низа од кодови на курсевите кои ги слуша.
 
-Потоа, да се креира структура Course во која се чуваат податоци за името на курсот (низа од карактери), 
+Потоа, да се креира структура Course во која се чуваат податоци за името на курсот
+(низа од карактери), 
 код на курсот(цел број) и број на студенти кои го слушаат.
 
 Да се направи функција:
@@ -971,17 +973,20 @@ int main() {
 int get_most_popular_course(struct course courses[], int num_courses)
 кoja што го враќа кодот на најпопуларниот курс.
 Напомена: Прво од тастатура се чита бројот на студенти, потоа бројот на курсеви. 
-Потоа се внесуваат курсевите и студентите, притоа за секој студент се читаат и кодовите на курсевите кои ги слуша.
+Потоа се внесуваат курсевите и студентите, притоа за секој студент се читаат и кодовите 
+на курсевите кои ги слуша.
  Tretata :
 Да се дефинира класа Programmer во која ќе се чуваат информации за:
 
 name (низа од максимум 100 карактери) - име на вработениот
 
-programmingLanguage (низа од максимум 100 карактери) - омилен програмски јазик на вработениот
+programmingLanguage (низа од максимум 100 карактери) - омилен програмски јазик на
+вработениот
 
 salary (цел број) - плата на вработениот
 
-Сите променливи внатре во класата треба да бидат приватни. Соодветно во рамките на класата да се дефинираат:
+Сите променливи внатре во класата треба да бидат приватни.
+Соодветно во рамките на класата да се дефинираат:
 
 конструктор (без и со параметри)
 
@@ -1002,7 +1007,8 @@ Salary: …
 
 Надвор од класата:
 
-printProgrammerWithHighestSalary(Programmer programmers, int n, charlang) кој што ќе го најде програмерот со најголема плата, 
+printProgrammerWithHighestSalary(Programmer programmers, int n, charlang) 
+кој што ќе го најде програмерот со најголема плата, 
 чиј што омилен програмски јазик е оној кој што се предава како аргумент во функцијата.
 
 ДА НЕ СЕ МЕНУВА MAIN ФУНКЦИЈАТА
@@ -1066,3 +1072,74 @@ int main() {
 
     return 0;
 }
+
+
+-----------------------------------------------------------------------------------------
+
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+struct Student {
+    char ime[100];
+    char indeks[20];
+    int kodovi[20];
+    int brcourses;
+};
+
+struct Course {
+    char ime[100];
+    int kod;
+    int brstudenti;
+};
+
+int get_most_popular_course(struct Course courses[], int num_courses) {
+    int maxstud = 0;
+    int mostpopcod = -1;
+
+    for (int i = 0; i < num_courses; ++i) {
+        if (courses[i].brstudenti > maxstud) {
+            maxstud = courses[i].brstudenti;
+            mostpopcod = courses[i].kod;
+        }
+    }
+    return mostpopcod;
+}
+
+int main() {
+    int brstudenti, brscourses;
+    cin >> brstudenti >> brscourses;
+
+    Course c[100];
+    Student s[100];
+
+    // Read courses
+    for (int i = 0; i < brscourses; ++i) {  // FIXED: Using brscourses instead of brstudenti
+        cin >> c[i].ime >> c[i].kod;
+        c[i].brstudenti = 0;
+    }
+
+    // Read students and update course enrollments
+    for (int i = 0; i < brstudenti; ++i) {
+        cin >> s[i].ime >> s[i].indeks >> s[i].brcourses;
+        for (int j = 0; j < s[i].brcourses; ++j) {
+            cin >> s[i].kodovi[j];
+
+            // Find the course and update student count
+            for (int k = 0; k < brscourses; ++k) {
+                if (s[i].kodovi[j] == c[k].kod) {
+                    c[k].brstudenti++;
+                    break;
+                }
+            }
+        }
+    }
+
+    int mostpop = get_most_popular_course(c, brscourses);
+    cout << "Most popular course code: " << mostpop << endl;
+
+    return 0;
+}
+
