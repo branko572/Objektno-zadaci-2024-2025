@@ -1143,3 +1143,183 @@ int main() {
     return 0;
 }
 
+
+
+
+Klasa Website  konstruktor getteri setteri void print i funkcija da se printa toj website koj sho ima poveke posetiteli 
+ako imaat ist broj dvata websita da se ispecati prviot mainot bese dade vo ovaa
+
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class Website {
+private:
+    char name[100];
+    char url[100];
+    int visitors;
+
+public:
+    // Constructor
+    Website(const char* name = "Unknown", const char* url = "Unknown", int visitors = 0) {
+        strcpy(this->name, name);
+        strcpy(this->url, url);
+        this->visitors = visitors;
+    }
+
+    // Getters
+    const char* getName() const {
+        return name;
+    }
+
+    const char* getUrl() const {
+        return url;
+    }
+
+    int getVisitors() const {
+        return visitors;
+    }
+
+    // Setters
+    void setName(const char* name) {
+        strcpy(this->name, name);
+    }
+
+    void setUrl(const char* url) {
+        strcpy(this->url, url);
+    }
+
+    void setVisitors(int visitors) {
+        this->visitors = visitors;
+    }
+
+    // Print website details
+    void print() const {
+        cout << "Website: " << name << endl;
+        cout << "URL: " << url << endl;
+        cout << "Visitors: " << visitors << endl;
+    }
+};
+
+// Function to print the most visited website
+void printMostVisitedWebsite(Website websites[], int n) {
+    if (n == 0) {
+        cout << "No websites available." << endl;
+        return;
+    }
+
+    int maxIndex = 0;
+    for (int i = 1; i < n; i++) {
+        if (websites[i].getVisitors() > websites[maxIndex].getVisitors()) {
+            maxIndex = i;
+        }
+    }
+
+    cout << "Most visited website:" << endl;
+    websites[maxIndex].print();
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    Website websites[100];
+    
+    char name[100], url[100];
+    int visitors;
+
+    for (int i = 0; i < n; i++) {
+        cin >> name >> url >> visitors;
+        websites[i] = Website(name, url, visitors);
+    }
+
+    printMostVisitedWebsite(websites, n);
+
+    return 0;
+}
+
+-----------------------------------------------------------------------------
+
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class Website {
+private:
+    char name[100];
+    char url[100];
+    int visitors;
+public:
+    // Constructor
+    Website(const char *name = "lol", const char *url = "dsadadsd", int visitors = 0) {
+        strcpy(this->name, name);
+        strcpy(this->url, url);
+        this->visitors = visitors;
+    }
+
+    // Getters
+    const char *getName() const {
+        return name;
+    }
+
+    const char *getUrl() const {
+        return url;
+    }
+
+    int getVisitors() const {
+        return visitors;
+    }
+
+    // Setter
+    void setVisitors(int visitors) {
+        this->visitors = visitors;
+    }
+
+    // Print method
+    void print() {
+        cout << "Website: " << name << endl;
+        cout << "URL: " << url << endl;
+        cout << "Visitors: " << visitors << endl;
+    }
+};
+
+// Function to find and print the most visited website
+void printMostVisitedWebsite(Website websites[], int n) {
+    if (n == 0) {
+        cout << "No websites available." << endl;
+        return;
+    }
+
+    int maxIndex = 0;
+    for (int i = 1; i < n; ++i) {  // Start from 1
+        if (websites[i].getVisitors() > websites[maxIndex].getVisitors()) {
+            maxIndex = i;
+        }
+    }
+
+    // Print the most visited website
+    cout << "Most visited website:" << endl;
+    websites[maxIndex].print();
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    Website websites[100];
+    char name[100], url[100];
+    int visitors;
+
+    for (int i = 0; i < n; ++i) {
+        cin >> name >> url >> visitors;
+        websites[i] = Website(name, url, visitors);
+    }
+
+    printMostVisitedWebsite(websites, n);
+    return 0;
+}
+
