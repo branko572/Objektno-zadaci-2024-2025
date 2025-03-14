@@ -824,3 +824,245 @@ int main() {
     sortCountries(countries,n);
     return 0;
 }
+
+
+
+
+
+
+
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+#include <string>
+#include <cstring>
+
+using namespace std;
+
+
+class Country{
+private:
+    char name[100];
+    char capital[100];
+    float area;
+    float population;
+public:
+    Country(char *name="lol", char *capital="lmao", float area=0, float population=0)  {
+        ::strcpy(this->name,name);
+        ::strcpy(this->capital,capital);
+        this->area=area;
+        this->population=population;
+    }
+
+    const char *getName() const {
+        return name;
+    }
+
+    void setName(char *name){
+        ::strcpy(this->name, name);
+    }
+
+    const char *getCapital() const {
+        return capital;
+    }
+    void setCapital(char *capital){
+        ::strcpy(this->capital, capital);
+    }
+
+    float getArea() const {
+        return area;
+    }
+
+    void setArea(float area) {
+        Country::area = area;
+    }
+
+    float getPopulation() const {
+        return population;
+    }
+
+    void setPopulation(float population) {
+        Country::population = population;
+    }
+
+
+    void display(){
+        cout<<"Country: "<<getName()<<endl;
+        cout<<"Capital: "<<getCapital()<<endl;
+        cout<<"Area: "<<getArea()<<endl;
+        cout<<"Population: "<<getPopulation()<<endl;
+    }
+
+
+};
+
+
+void sortCountries(Country *countries, int n){
+
+
+
+    for (int i = 0; i < n-1; ++i) {
+        for (int j = 0; j < n-1-i; ++j) {
+            if(countries[j].getArea()<countries[j+1].getArea()){
+                swap(countries[j],countries[j+1]);
+            }
+        }
+    }
+    for (int i = 0; i < n; ++i) {
+        countries[i].display();
+        cout<<endl;
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    Country countries[100];
+
+    char name[100];
+    char capital[100];
+    float area;
+    float population;
+
+    for (int i = 0; i < n-1; i++)  {
+        cin>>name;
+        cin >> capital;
+        cin >> area;
+        cin>>population;
+
+        // testing constructor with arguments
+        countries[i] = Country(name, capital, area, population);
+
+    }
+
+
+    // testing set methods and display for last element
+    cin>>name;
+    cin >> capital;
+    cin >> area;
+    cin>>population;
+    countries[n-1].setName(name);
+    countries[n-1].setCapital(capital);
+    countries[n-1].setArea(area);
+    countries[n-1].setPopulation(population);
+
+    cout<<"-->Testing set methods and display()"<<endl;
+    countries[n-1].display();
+    cout<<endl;
+
+    cout<<"-->Testing sortCountries()"<<endl;
+    sortCountries(countries,n);
+    return 0;
+}
+
+
+
+
+
+Да се креира структура Student во која се чуваат податоци за еден студент. За студентот се чуваат информации за името на студентот(низа од карактери), 
+број на индекс на студентот, 
+број на курсеви кои ги слуша, низа од кодови на курсевите кои ги слуша.
+
+Потоа, да се креира структура Course во која се чуваат податоци за името на курсот (низа од карактери), 
+код на курсот(цел број) и број на студенти кои го слушаат.
+
+Да се направи функција:
+
+int get_most_popular_course(struct course courses[], int num_courses)
+кoja што го враќа кодот на најпопуларниот курс.
+Напомена: Прво од тастатура се чита бројот на студенти, потоа бројот на курсеви. 
+Потоа се внесуваат курсевите и студентите, притоа за секој студент се читаат и кодовите на курсевите кои ги слуша.
+ Tretata :
+Да се дефинира класа Programmer во која ќе се чуваат информации за:
+
+name (низа од максимум 100 карактери) - име на вработениот
+
+programmingLanguage (низа од максимум 100 карактери) - омилен програмски јазик на вработениот
+
+salary (цел број) - плата на вработениот
+
+Сите променливи внатре во класата треба да бидат приватни. Соодветно во рамките на класата да се дефинираат:
+
+конструктор (без и со параметри)
+
+деструктор
+
+set методи
+
+get методи
+Да се дефинираат следните методи во класата:
+
+display() која што ќе ги печати информациите за програмерот во следниот формат:
+
+Name: …
+
+Programming language: …
+
+Salary: …
+
+Надвор од класата:
+
+printProgrammerWithHighestSalary(Programmer programmers, int n, charlang) кој што ќе го најде програмерот со најголема плата, 
+чиј што омилен програмски јазик е оној кој што се предава како аргумент во функцијата.
+
+ДА НЕ СЕ МЕНУВА MAIN ФУНКЦИЈАТА
+
+#include <iostream>
+
+using namespace std;
+
+struct Student {
+    char ime[100];
+    char indeks[20];
+    int kodovi[20];
+    int kolkuKursevi;
+};
+
+struct Course {
+    char ime[100];
+    int kod;
+    int brStudenti;
+};
+
+int najPopularen(Course *courses, int num) {
+    int ind = -1, maxS = -1;
+
+    for (int i = 0; i < num; i++) {
+        if (courses[i].brStudenti > maxS) {
+            maxS = courses[i].brStudenti;
+            ind = i;
+        }
+    }
+
+    return ind;
+}
+
+int main() {
+    int n, t;
+    cin >> n >> t;
+
+    Course kursevi[20];
+    Student studenti[20];
+
+    for (int i = 0; i < t; i++) {
+        cin >> kursevi[i].ime >> kursevi[i].kod;
+        kursevi[i].brStudenti = 0;
+    }
+
+    for (int i = 0; i < n; i++) {
+        cin >> studenti[i].ime >> studenti[i].indeks >> studenti[i].kolkuKursevi;
+        for (int j = 0; j < studenti[i].kolkuKursevi; j++) {
+            cin >> studenti[i].kodovi[j];
+            for (int k = 0; k < t; k++) {
+                if (studenti[i].kodovi[j] == kursevi[k].kod)
+                    kursevi[k].brStudenti++;
+            }
+        }
+    }
+
+    int ind = najPopularen(kursevi, t);
+
+    cout << "Najpopularen kurs e: " << kursevi[ind].ime;
+
+    return 0;
+}
