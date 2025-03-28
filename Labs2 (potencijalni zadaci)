@@ -933,3 +933,280 @@ int main() {
 
 
 
+Да се дефинира класа InvoiceItem во која што ќе се чуваат податоци за една ставка во фактура:
+
+име на ставка (низа од максимум 100 карактери)
+цена на ставка (цел број)
+За класата да се дефинира copy конструктор, default конструктор и конструктор со аргументи.
+Доколку е потребно да се креира и get методи.
+
+Потоа да се креира класа Invoice во која што се чуваат следните податоци:
+
+број на фактура (низа од максимум 10 карактери)
+број на ставки во фактурата (цел број)
+низа од ставки во фактурата (низа од објекти од InvoiceItem класата, max 100)
+Да се креира конструктор со аргументи за класата.
+Доколку е потребно да се креира и get методи.
+
+Во класата да се креира метода totalPrice што ќе го пресметува вкупниот износ на фактурата. Вкупниот износ на фактурата се пресметува како збир од цените на сите ставки во нејзе.
+
+ДА НЕ СЕ МЕНУВА MAIN ФУНКЦИЈАТА.
+
+1
+[12:08 PM]
+
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+// Класа за една ставка во фактурата
+class InvoiceItem {
+private:
+    char name[101];  // Име на ставката (максимум 100 знаци + '\0')
+    int price;       // Цена на ставката
+
+public:
+    // Default конструктор
+    InvoiceItem() {
+        strcpy(name, "");
+        price = 0;
+    }
+
+    // Конструктор со аргументи
+    InvoiceItem(const char *name, int price) {
+        strcpy(this->name, name);
+        this->price = price;
+    }
+
+    // Copy конструктор
+    InvoiceItem(const InvoiceItem &other) {
+        strcpy(this->name, other.name);
+        this->price = other.price;
+    }
+
+    // Гетери (ако се потребни)
+    const char* getName() const {
+        return name;
+    }
+
+    int getPrice() const {
+        return price;
+    }
+
+    // Метод за печатење
+    void print() const {
+        cout << "Item: " << name << ", Price: " << price << endl;
+    }
+};
+
+// Класа за фактура
+class Invoice {
+private:
+    char invoiceNumber[11];   // Број на фактура (максимум 10 знаци + '\0')
+    int numItems;             // Број на ставки во фактурата
+    InvoiceItem items[100];   // Поле од ставки (максимум 100)
+
+public:
+    // Конструктор со аргументи
+    Invoice(const char *invoiceNumber, InvoiceItem items[], int numItems) {
+        strcpy(this->invoiceNumber, invoiceNumber);
+        this->numItems = numItems;
+        for (int i = 0; i < numItems; i++) {
+            this->items[i] = items[i];  // Копирање на ставките
+        }
+    }
+
+    // Метод за пресметка на вкупната цена на фактурата
+    int totalPrice() const {
+        int sum = 0;
+        for (int i = 0; i < numItems; i++) {
+            sum += items[i].getPrice();
+        }
+        return sum;
+    }
+
+    // Метод за печатење на фактурата
+    void print() const {
+        cout << "Invoice #" << invoiceNumber << endl;
+        for (int i = 0; i < numItems; i++) {
+            items[i].print();
+        }
+        cout << "Total Price: " << totalPrice() << endl;
+    }
+};
+
+// MAIN ФУНКЦИЈА (НЕ ЈА МЕНУВАМЕ)
+int main() {
+    int n;
+    cin >> n;
+    InvoiceItem items[100];
+
+    for (int i = 0; i < n; i++) {
+        char name[100];
+        int price;
+        cin >> name >> price;
+        items[i] = InvoiceItem(name, price);
+    }
+
+    char invoiceNumber[10];
+    cin >> invoiceNumber;
+    Invoice invoice(invoiceNumber, items, n);
+
+    cout << "Invoice total price: " << invoice.totalPrice() << endl;
+    return 0;
+}
+
+
+
+Да се дефинира класа Potpisuvac во која се чуваат информации за:
+
+име (низа од максимум 20 знаци)
+презиме (низа од максимум 20 знаци)
+ЕМБГ (низа од максимум 14 знаци)
+За класата да се дефинира copy конструктор, default конструктор и конструктор со аргументи.
+
+Да се дефинира класа Dogovor, во која се чуваат информации за:
+
+број на договор (int),
+категорија на договор (низа од 50 знаци),
+поле од 3 потпишувачи на договорот (објекти од класата Potpisuvac)
+Во класата да се додаде метод кој ќе проверува дали постојат два исти потпишувачи (имаат ист ЕМБГ).
+
+
+int main() {
+    // Креирање на потпишувачи
+    Potpisuvac p1("Marko", "Markovski", "1234567890123");
+    Potpisuvac p2("Ana", "Anovska", "9876543210987");
+    Potpisuvac p3("Marko", "Markovski", "1234567890123"); // Ист ЕМБГ со p1
+
+    // Поле од потпишувачи
+    Potpisuvac potpisuvaci[3] = {p1, p2, p3};
+
+    // Креирање на договор
+    Dogovor d(101, "Kupoprodazen dogovor", potpisuvaci);
+    
+    // Печатење на договорот
+    d.print();
+
+    // Проверка за дупликат потпишувачи
+    if (d.hasDuplicateSigners()) {
+        cout << "Ima dva isti potpisuvaci!" << endl;
+    } else {
+        cout << "Nema isti potpisuvaci!" << endl;
+    }
+
+    return 0;
+}
+
+
+
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class Potpisuvac {
+private:
+    char ime[21];       // Низа со максимум 20 знаци + 1 за null terminator
+    char prezime[21];   // Низа со максимум 20 знаци
+    char embg[14];      // ЕМБГ има максимум 13 знаци + 1 за null terminator
+
+public:
+    // Default конструктор
+    Potpisuvac() {
+        strcpy(ime, "");
+        strcpy(prezime, "");
+        strcpy(embg, "");
+    }
+
+    // Конструктор со аргументи
+    Potpisuvac(const char *ime, const char *prezime, const char *embg) {
+        strcpy(this->ime, ime);
+        strcpy(this->prezime, prezime);
+        strcpy(this->embg, embg);
+    }
+
+    // Copy конструктор
+    Potpisuvac(const Potpisuvac &other) {
+        strcpy(this->ime, other.ime);
+        strcpy(this->prezime, other.prezime);
+        strcpy(this->embg, other.embg);
+    }
+
+    // Метод за добивање на ЕМБГ
+    const char* getEmbg() const {
+        return embg;
+    }
+
+    // Метод за печатење на податоците
+    void print() const {
+        cout << "Potpisuvac: " << ime << " " << prezime << ", EMBG: " << embg << endl;
+    }
+};
+
+class Dogovor {
+private:
+    int brojDogovor;
+    char kategorija[51];    // Низа со максимум 50 знаци + 1 за null terminator
+    Potpisuvac potpisuvaci[3];  // Поле од 3 потпишувачи
+
+public:
+    // Конструктор со аргументи
+    Dogovor(int brojDogovor, const char *kategorija, const Potpisuvac potpisuvaci[3]) {
+        this->brojDogovor = brojDogovor;
+        strcpy(this->kategorija, kategorija);
+        for (int i = 0; i < 3; i++) {
+            this->potpisuvaci[i] = potpisuvaci[i];
+        }
+    }
+
+    // Метод кој проверува дали има два исти потпишувачи (според ЕМБГ)
+    bool hasDuplicateSigners() {
+        for (int i = 0; i < 2; i++) {
+            for (int j = i + 1; j < 3; j++) {
+                if (strcmp(potpisuvaci[i].getEmbg(), potpisuvaci[j].getEmbg()) == 0) {
+                    return true; // Ако има исти ЕМБГ, враќа true
+                }
+            }
+        }
+        return false; // Ако нема дупликати
+    }
+
+    // Метод за печатење на договорот
+    void print() const {
+        cout << "Dogovor #" << brojDogovor << ", Kategorija: " << kategorija << endl;
+        cout << "Potpisuvaci:" << endl;
+        for (int i = 0; i < 3; i++) {
+            potpisuvaci[i].print();
+        }
+    }
+};
+
+int main() {
+    // Креирање на потпишувачи
+    Potpisuvac p1("Marko", "Markovski", "1234567890123");
+    Potpisuvac p2("Ana", "Anovska", "9876543210987");
+    Potpisuvac p3("Marko", "Markovski", "1234567890123"); // Ист ЕМБГ со p1
+
+    // Поле од потпишувачи
+    Potpisuvac potpisuvaci[3] = {p1, p2, p3};
+
+    // Креирање на договор
+    Dogovor d(101, "Kupoprodazen dogovor", potpisuvaci);
+    
+    // Печатење на договорот
+    d.print();
+
+    // Проверка за дупликат потпишувачи
+    if (d.hasDuplicateSigners()) {
+        cout << "Ima dva isti potpisuvaci!" << endl;
+    } else {
+        cout << "Nema isti potpisuvaci!" << endl;
+    }
+
+    return 0;
+}
+
