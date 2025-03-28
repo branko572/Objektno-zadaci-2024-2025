@@ -1,0 +1,728 @@
+Во рамките на една видео игра се чуваат податоци за кориснички профили (UserProfile) и нивните достигнувања во играта (Achievement).
+Вие треба да ги дефинирате класите и функциите за коректна имплементација на системот. Не го менувајте дадениот код.
+
+
+За таа цел, дефинирајте класа Achievement со приватни податочни членки:
+
+name - име на достигнувањето (низа од знаци);
+description - опис на достигнувањето (низа од знаци);
+totalUserAchievements - вкупен број на достигнувања на сите кориснички профили (static int).
+Дополнете ја класата со default конструктор, конструктор со аргументи и copy конструктор како и следните функции:
+
+print - функција која ги печати името и описот на достигнувањето во нов ред;
+incrementTotalUserAchievements - функција која ја зголемува вредноста на totalUserAchievements за 1.
+Потребно е да работите без get/set методи.
+
+
+Понатаму, дефинирајте класа UserProfile со приватни податочни членки:
+
+name - име на профилот (низа од знаци);
+achievements - низа од добиени достигнувања на корисникот за дадената игра (максимална големина е 50);
+n - број на добиени достигнувања на корисникот за дадената игра (иницијално поставен на 0).
+Дополнете ја класата со default конструктор и конструктор со аргумент name.
+Напишете ги функциите:
+
+print - функција која го печати името на корисникот и неговите добиени достигнувања во играта во формат даден во тест примерите.
+void addAchievement(const Achievement& achievement) - функција која во низата од достигнувања achievements го додава достигнувањето achievement и ја зголемува вредноста на totalUserAchievements.
+На крај, да се напише функција void showAchievementsProgress(UserProfile profiles[], int n, Achievement achievements[], int m) 
+која директно пристапува до приватните членки на класите Achievement и UserProfile, 
+и за секое достигнување во играта на екран ќе ги испечати името и описот на достигнувањето, 
+како и процентот на корисници кои го добиле тоа достигнување.
+На крај да се испечати просечниот број на добиени достигнувања со формулата totalUserAchievements * 100.0 / (n * m). Форматот на печатењето е даден во тест примерите.
+
+
+For example:
+
+Input	
+Testing Achievement methods.
+1
+ALL USERS:
+Anonymous31
+2
+ALL ACHIEVEMENTS:
+Secret Achievement 1
+"Description is hidden for this achievement."
+Final boss
+"Reach the final stage."
+2
+LIST OF NUMBERS where user [num1] has achievement [num2]:
+1 1
+1 2
+
+Result
+Secret Achievement 1
+"Description is hidden for this achievement."
+Final boss
+"Reach the final stage."
+
+Input
+Testing UserProfile methods.
+2
+ALL USERS:
+Anonymous31
+UltimateGamer
+2
+ALL ACHIEVEMENTS:
+Secret Achievement 1
+"Description is hidden for this achievement."
+Final boss
+"Reach the final stage."
+3
+LIST OF NUMBERS where user [num1] has achievement [num2]:
+1 1
+1 2
+2 2
+
+Result
+User: Anonymous31
+Achievements:
+Secret Achievement 1
+"Description is hidden for this achievement."
+Final boss
+"Reach the final stage."
+User: UltimateGamer
+Achievements:
+Final boss
+"Reach the final stage."
+
+Input
+Testing showAchievementsProgress function.
+2
+ALL USERS:
+Anonymous31
+UltimateGamer
+2
+ALL ACHIEVEMENTS:
+Secret Achievement 1
+"Description is hidden for this achievement."
+Final boss
+"Reach the final stage."
+3
+LIST OF NUMBERS where user [num1] has achievement [num2]:
+1 1
+1 2
+2 2
+
+Result
+Secret Achievement 1
+"Description is hidden for this achievement."
+---Percentage of users who have this achievement: 50%
+Final boss
+"Reach the final stage."
+---Percentage of users who have this achievement: 100%
+------Average completion rate of the game: 75%
+
+
+
+DO NOT CHANGE MAIN: 
+
+int main() {
+    char testcase[100];
+    cin.getline(testcase, 100);
+
+    int n;
+    cin >> n;
+    cin.ignore();
+
+    char ignore[100];
+    cin.getline(ignore, 100);
+    UserProfile users[100];
+    for (int i = 0; i < n; ++i) {
+        char name[100];
+        cin >> name;
+        users[i] = UserProfile(name);
+    }
+
+    int m;
+    cin >> m;
+    cin.ignore();
+
+    cin.getline(ignore, 100);
+    Achievement achievements[100];
+    for (int i = 0; i < m; ++i) {
+        char name[100], description[100];
+        cin.getline(name, 100);
+        cin.getline(description, 100);
+        achievements[i] = Achievement(name, description);
+    }
+
+    int k;
+    cin >> k;
+    cin.ignore();
+
+    cin.getline(ignore, 100);
+    for (int i = 0; i < k; ++i) {
+        int numUser, numAchievement;
+        cin >> numUser >> numAchievement;
+        numUser -= 1;
+        numAchievement -= 1;
+        users[numUser].addAchievement(achievements[numAchievement]);
+    }
+
+    if (testcase[8] == 'A') {
+        for (int i = 0; i < m; ++i) {
+            achievements[i].print();
+        }
+        Achievement::incrementTotal();
+    } else if (testcase[8] == 'U') {
+        for (int i = 0; i < n; ++i) {
+            users[i].print();
+        }
+    } else {
+        showAchievementsProgress(users, n, achievements, m);
+    }
+
+    return 0;
+}
+
+
+
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class Achievement {
+private:
+    char name[100];
+    char description[100];
+    static int totalUserAchievements;
+
+public:
+    Achievement() {
+        strcpy(name, "");
+        strcpy(description, "");
+    }
+
+    Achievement(const char *name, const char *description) {
+        strcpy(this->name, name);
+        strcpy(this->description, description);
+    }
+
+    void print() const {
+        cout << name << endl;
+        cout << description << endl;
+    }
+
+    static void incrementTotal() {
+        totalUserAchievements++;
+    }
+
+    static int getTotal() {
+        return totalUserAchievements;
+    }
+};
+
+int Achievement::totalUserAchievements = 0;
+
+class UserProfile {
+private:
+    char name[100];
+    Achievement achievements[50];
+    int numAchievements;
+
+public:
+    UserProfile() {
+        strcpy(name, "");
+        numAchievements = 0;
+    }
+
+    UserProfile(const char *name) {
+        strcpy(this->name, name);
+        numAchievements = 0;
+    }
+
+    void addAchievement(const Achievement &achievement) {
+        if (numAchievements < 50) {
+            achievements[numAchievements++] = achievement;
+            Achievement::incrementTotal();
+        }
+    }
+
+    void print() const {
+        cout << "User: " << name << endl;
+        cout << "Achievements:" << endl;
+        for (int i = 0; i < numAchievements; ++i) {
+            achievements[i].print();
+        }
+    }
+};
+
+void showAchievementsProgress(UserProfile profiles[], int numProfiles, Achievement achievements[], int numAchievements) {
+    for (int i = 0; i < numAchievements; ++i) {
+        int count = 0;
+        for (int j = 0; j < numProfiles; ++j) {
+            for (int k = 0; k < profiles[j].numAchievements; ++k) {
+                if (strcmp(profiles[j].achievements[k].name, achievements[i].name) == 0) {
+                    count++;
+                    break;
+                }
+            }
+        }
+        cout << achievements[i].name << endl;
+        cout << achievements[i].description << endl;
+        cout << "---Percentage of users who have this achievement: "
+             << (count * 100.0 / numProfiles) << "%" << endl;
+    }
+
+    double averageCompletionRate = (numProfiles > 0 && numAchievements > 0) ?
+                                   (Achievement::getTotal() * 100.0 / (numProfiles * numAchievements)) : 0;
+    cout << "------Average completion rate of the game: " << averageCompletionRate << "%" << endl;
+}
+
+int main() {
+    char testcase[100];
+    cin.getline(testcase, 100);
+
+    int n;
+    cin >> n;
+    cin.ignore();
+
+    char ignore[100];
+    cin.getline(ignore, 100);
+    UserProfile users[100];
+    for (int i = 0; i < n; ++i) {
+        char name[100];
+        cin >> name;
+        users[i] = UserProfile(name);
+    }
+
+    int m;
+    cin >> m;
+    cin.ignore();
+
+    cin.getline(ignore, 100);
+    Achievement achievements[100];
+    for (int i = 0; i < m; ++i) {
+        char name[100], description[100];
+        cin.getline(name, 100);
+        cin.getline(description, 100);
+        achievements[i] = Achievement(name, description);
+    }
+
+    int k;
+    cin >> k;
+    cin.ignore();
+
+    cin.getline(ignore, 100);
+    for (int i = 0; i < k; ++i) {
+        int numUser, numAchievement;
+        cin >> numUser >> numAchievement;
+        numUser -= 1;
+        numAchievement -= 1;
+        users[numUser].addAchievement(achievements[numAchievement]);
+    }
+
+    if (testcase[8] == 'A') {
+        for (int i = 0; i < m; ++i) {
+            achievements[i].print();
+        }
+        Achievement::incrementTotal();
+    } else if (testcase[8] == 'U') {
+        for (int i = 0; i < n; ++i) {
+            users[i].print();
+        }
+    } else {
+        showAchievementsProgress(users, n, achievements, m);
+    }
+
+    return 0;
+}
+
+
+Да се дефинира класа Employee во која ќе се чуваат информации за:
+
+name(низа од максимум 100 карактери) -име на вработениот
+
+surname(низа од максимум 100 карактери) - презиме
+
+salary(цел број) - колку му е платата
+
+методи кои што класата треба да ги има:
+
+print() 
+
+-Принта во формат:
+Employee name: 
+
+Employee surname: 
+
+Employee salary: 
+
+Да се дефинира класа TechCompany во која ќе се чуваат информации за:
+
+name(низа од максимум 100 карактери) -име на фирмата
+
+employees(низа од вработени) 
+
+numOfEmployees(цел број) - колку вработени има во фирмата 
+
+методи кои што класата треба да ги има:
+
+print() 
+
+-Принта во формат:
+Tech company name: 
+
+Number of employees: 
+
+ double getAverageOfEmployeeсSalary()
+
+-Враќа средна врендност од платите на секој вработен во таа фирма
+
+
+Сите променливи внатре во класите треба да бидат приватни. Соодветно во рамките на класите да се дефинираат:
+
+конструктор (без и со параметри)
+
+деструктор
+
+set методи
+
+get методи
+
+copy constructor
+
+Функции надвор од класата:
+
+printCompanyWithHighestAverageSalary(TechCompany companies[], int numCompanies)
+
+-Го враќа TechCompany објектот што има најголема средна вредност за плати на неговите вработени
+printCompanyWithHighestStdSalary(TechCompany companies[], int numCompanies)
+
+-Го враќа TechCompany објектот што има најголема стандардна девијација за плати на неговите вработени
+VAR=∑for each Employee e[(e.salary−AVG)2]n−1STD=(√VAR)
+
+-Помош: AVG е средната вредност на платите на сите вработен во таа фирма, STD е стандардна девијација, VAR  е помошна променлива. И прво квадрирајте го изразот па потоа додадете го во сумата!
+isSameCompany(TechCompany company1, TechCompany company2)
+
+-Враќа boolean вредност: две фирми се исти ако имаат исто име. Треба само да се првери дали им е исто името!
+ДА НЕ СЕ МЕНУВА MAIN ФУНКЦИЈАТА.
+
+(Привремена слика за формулите)
+
+For example:
+
+Input	
+3
+CompanyA
+5
+John Doe 50000
+Jane Doe 70000
+Bob Smith 60000
+Anna Williams 80000
+Michael Brown 55000
+CompanyB
+4
+Alice Brown 80000
+David Green 70000
+Eve White 50000
+Frank Black 65000
+CompanyC
+6
+Laura Lee 100000
+Benjamin Johnson 65000
+Emma Davis 75000
+Oliver Wilson 82000
+Sophie Martinez 60000
+William Clark 72000
+
+Result
+-->Testing get and set methods for one object and copy constructor
+copy
+-->Testing addEmployee function
+Number of employees in copy: 6
+-->Testing copy of first employee
+Employee name: John
+Employee surname: Doe
+Employee salary: 50000
+-->Testing methods
+Tech company with the highest average salary: CompanyC
+Tech company with the highest standard deviation for salaries: CompanyC
+The tech company: CompanyC has the highest standard deviation and highest average salary
+
+
+// DO NOT CHANGE main()
+
+int main() {
+    const int MAX_COMPANIES = 10;
+    const int MAX_EMPLOYEES = 20;
+
+    TechCompany companies[MAX_COMPANIES];
+
+    int n;
+    std::cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        char name[100];
+        std::cin >> name;
+
+        TechCompany company(name);
+
+        int m;
+        std::cin >> m;
+
+        for (int j = 0; j < m; j++) {
+            char name[100];
+            char surname[100];
+            int salary;
+
+            std::cin >> name;
+            std::cin >> surname;
+            std::cin >> salary;
+
+            Employee employee(name, surname, salary);
+
+            company.addEmployee(employee);
+        }
+
+        companies[i] = company;
+    }
+
+    TechCompany copy = companies[0];
+
+    std::cout << "-->Testing get and set methods for one object and copy constructor" << std::endl;
+    copy.setName("copy");
+    std::cout << copy.getName() << std::endl;
+
+    std::cout << "-->Testing addEmployee function" << std::endl;
+    Employee newEmployee("John", "Doe", 5000);
+    copy.addEmployee(newEmployee);
+    std::cout << "Number of employees in copy: " << copy.getNumOfEmployees() << std::endl;
+
+    std::cout << "-->Testing copy of first employee" << std::endl;
+    Employee firstEmployee = copy.getEmployee(0);
+    firstEmployee.print();
+
+    std::cout << "-->Testing methods" << std::endl;
+    TechCompany t = printCompanyWithHighestAverageSalary(companies, n);
+    TechCompany t1 = printCompanyWithHighestStdSalary(companies, n);
+
+    std::cout << "Tech company with the highest average salary: " << t.getName() << std::endl;
+    std::cout << "Tech company with the highest standard deviation for salaries: " << t1.getName() << std::endl;
+
+    if (isSameCompany(t, t1)) {
+        std::cout << "The tech company: " << t.getName() << " has the highest standard deviation and highest average salary" << std::endl;
+    }
+    return 0;
+}
+
+
+
+#include <iostream>
+#include <cstring>
+#include <iomanip>
+#include <cmath>
+#include <string>
+#include <string.h>
+
+using namespace std;
+
+
+class Employee{
+private:
+    char name[100];
+    char surname[100];
+    int salary;
+public:
+    Employee(char *name="lol", char *surname="lmao", int salary=0)  {
+        ::strcpy(this->name, name);
+        ::strcpy(this->surname,surname);
+        this->salary=salary;
+    }
+
+
+
+    Employee(const Employee &e){
+        ::strcpy(this->name, e.name);
+        ::strcpy(this->surname,e.surname);
+        this->salary=e.salary;
+    }
+
+
+    const char *getName() const {
+        return name;
+    }
+
+
+
+    const char *getSurname() const {
+        return surname;
+    }
+
+    int getSalary() const {
+        return salary;
+    }
+
+    void setSalary(int salary) {
+        Employee::salary = salary;
+    }
+
+    void print(){
+        cout<<"Employee name: "<<name<<endl;
+        cout<<"Employee surname: "<<surname<<endl;
+        cout<<"Employee salary: "<<salary<<endl;
+    }
+
+    ~Employee(){}
+};
+
+
+
+class TechCompany{
+private:
+    char name[100];
+    Employee employees[20];
+    int numOfEmployees;
+public:
+    TechCompany(char *name="lol") {
+        ::strcpy(this->name,name);
+       numOfEmployees=0;
+    }
+
+    const char *getName() const {
+        return name;
+    }
+    void setName(char *name){
+        ::strcpy(this->name,name);
+    }
+
+
+
+    const Employee &getEmployee(int index) const {
+        return employees[index];
+    }
+
+    int getNumOfEmployees() const {
+        return numOfEmployees;
+    }
+
+    void setNumOfEmployees(int numOfEmployees) {
+        TechCompany::numOfEmployees = numOfEmployees;
+    }
+
+    void addEmployee(const Employee &employee){
+        if(numOfEmployees < 20){
+            employees[numOfEmployees++]=employee;
+        }
+
+    }
+
+    void print(){
+        cout<<"Tech company name: "<<name<<endl;
+        cout<<"Number of employees: "<<numOfEmployees<<endl;
+
+    }
+
+
+    double getAverageSalary(){
+        int sum=0;
+        for (int i = 0; i <numOfEmployees ; ++i) {
+            sum+=employees[i].getSalary();
+        }
+
+        return sum/numOfEmployees;
+    }
+
+    double getStandardDeviationSalary() {
+        double avg = getAverageSalary();
+        double sum = 0;
+        for (int i = 0; i < numOfEmployees; ++i) {
+            sum += pow(employees[i].getSalary() - avg, 2);
+        }
+        return numOfEmployees > 1 ? sqrt(sum / numOfEmployees) : 0;
+    }
+
+~TechCompany(){}
+};
+
+
+TechCompany printCompanyWithHighestAverageSalary(TechCompany companies[], int numCompanies){
+
+    TechCompany highest = companies[0];
+    for (int i = 1; i < numCompanies; ++i) {
+        if (companies[i].getAverageSalary() > highest.getAverageSalary()) {
+            highest = companies[i];
+        }
+    }
+    return highest;
+}
+
+TechCompany printCompanyWithHighestStdSalary(TechCompany companies[], int numCompanies){
+    TechCompany highest = companies[0];
+    for (int i = 1; i < numCompanies; ++i) {
+        if (companies[i].getStandardDeviationSalary() > highest.getStandardDeviationSalary()) {
+            highest = companies[i];
+        }
+    }
+    return highest;
+}
+
+bool isSameCompany(TechCompany company1, TechCompany company2){
+    return strcmp(company1.getName(),company2.getName())==0;
+}
+
+int main() {
+    const int MAX_COMPANIES = 10;
+    const int MAX_EMPLOYEES = 20;
+
+    TechCompany companies[MAX_COMPANIES];
+
+    int n;
+    std::cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        char name[100];
+        std::cin >> name;
+
+        TechCompany company(name);
+
+        int m;
+        std::cin >> m;
+
+        for (int j = 0; j < m; j++) {
+            char name[100];
+            char surname[100];
+            int salary;
+
+            std::cin >> name;
+            std::cin >> surname;
+            std::cin >> salary;
+
+            Employee employee(name, surname, salary);
+
+            company.addEmployee(employee);
+        }
+
+        companies[i] = company;
+    }
+
+    TechCompany copy = companies[0];
+
+    std::cout << "-->Testing get and set methods for one object and copy constructor" << std::endl;
+    copy.setName("copy");
+    std::cout << copy.getName() << std::endl;
+
+    std::cout << "-->Testing addEmployee function" << std::endl;
+    Employee newEmployee("John", "Doe", 5000);
+    copy.addEmployee(newEmployee);
+    std::cout << "Number of employees in copy: " << copy.getNumOfEmployees() << std::endl;
+
+    std::cout << "-->Testing copy of first employee" << std::endl;
+    Employee firstEmployee = copy.getEmployee(0);
+    firstEmployee.print();
+
+    std::cout << "-->Testing methods" << std::endl;
+    TechCompany t = printCompanyWithHighestAverageSalary(companies, n);
+    TechCompany t1 = printCompanyWithHighestStdSalary(companies, n);
+
+    std::cout << "Tech company with the highest average salary: " << t.getName() << std::endl;
+    std::cout << "Tech company with the highest standard deviation for salaries: " << t1.getName() << std::endl;
+
+    if (isSameCompany(t, t1)) {
+        std::cout << "The tech company: " << t.getName() << " has the highest standard deviation and highest average salary" << std::endl;
+    }
+    return 0;
+}
+
