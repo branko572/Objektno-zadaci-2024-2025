@@ -1457,3 +1457,123 @@ int main() {
     return 0;
 }
 
+
+
+Во оваа задача треба да се внесат и испечатат податоци за автомобили.
+
+За еден автомобил (објект од класата Car) се чуваат следниве податоци:
+
+сопственик (објект од класата Person)
+датум на купување (објект од класата Date)
+цена (float price), предодредена вредност 0
+За класата Car потребно е да се напише метод за печатење print() и метод за добивање на цената getPrice().
+
+Класата Date содржи три цели броеви (int year, month, day) кои претставуваат датум. За неа треба да се напише метод за печатење print(), предодреден (default) конструктор, конструктор со параметри и конструктор за копирање.
+
+Класата Person содржи име и презиме (низи од максимум 20 знаци, со предодредени вредности not specified), предодреден конструктор, конструктор со параметри и метод за печатење print().
+
+Методот за печатење кај класата Person изгледа вака: [name] [lastName].
+
+Методот за печатење кај класата Date изгледа вака: [year].[month].[day].
+
+Методот за печатење кај класата Car изгледа вака:
+
+owner.print()
+
+date.print()
+
+Price: [price]
+
+Покрај тоа, потребно е да се напише метод cheaperThan(Car* cars, int numCars, float price) кој ќе ги испечати сите објекти Car од низата cars со големина numCars чија цена е помала од price.
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class Date {
+    int year;
+    int month;
+    int day;
+public:
+    Date(int year=1900, int month=1, int day=1) {
+        this->year = year;
+        this->month = month;
+        this->day = day;
+    }
+    Date(const Date &d) {
+        this->year = d.year;
+        this->month = d.month;
+        this->day = d.day;
+    }
+    void print() const {
+        cout << year << "." << month << "." << day << endl;
+    }
+};
+
+class Person {
+    char name[20];
+    char surname[20];
+public:
+    Person(const char* name = "not specified", const char* surname = "not specified") {
+        strcpy(this->name, name);
+        strcpy(this->surname, surname);
+    }
+    void print() const {
+        cout << name << " " << surname << endl;
+    }
+};
+
+class Car {
+    Person p;
+    Date d;
+    float price;
+public:
+    float getPrice() const {
+        return price;
+    }
+    Car(Person p = Person(), Date d = Date(), float price = 0) {
+        this->p = p;
+        this->d = d;
+        this->price = price;
+    }
+    void print() const {
+        p.print();
+        d.print();
+        cout << "Price: " << price << endl;
+    }
+};
+
+void cheaperThan(Car *cars, int numCars, float price) {
+    for (int i = 0; i < numCars; i++) {  // Поправен for-loop
+        if (cars[i].getPrice() < price) {
+            cars[i].print();
+        }
+    }
+}
+
+int main() {
+    Person p1("John", "Doe");
+    Person p2("Alice", "Smith");
+    Person p3("Bob", "Johnson");
+
+    Date d1(2022, 5, 10);
+    Date d2(2023, 8, 15);
+    Date d3(2021, 12, 3);
+
+    Car c1(p1, d1, 25000);
+    Car c2(p2, d2, 18000);
+    Car c3(p3, d3, 12000); // Најевтин автомобил
+
+    Car cars[] = {c1, c2, c3};
+
+    cout << "Cars cheaper than 20000:\n";
+    cheaperThan(cars, 3, 20000);
+
+    return 0;
+}
+
+
+
+
+
