@@ -1210,3 +1210,121 @@ int main() {
     return 0;
 }
 
+
+
+
+
+Да се дефинира класа Flight во која што ќе се чуваат податоци за лет:
+
+име на лет (низа од максимум 100 карактери)
+полетување од (низа од максимум 50 карактери)
+пристигнување во (низа од максимум 50 карактери)
+цена на лет (цел број)
+За класата да се дефинира copy конструктор, default конструктор и конструктор со аргументи.
+Доколку е потребно да се креираат и get методи.
+
+Потоа да се креира класа Airport во која што се чуваат следните податоци:
+
+име на аеродром (низа од максимум 50 карактери)
+број на летови на аеродромот(цел број)
+низа од летови на аеродромот(низа од објекти од Flight класата, max 100)
+Да се креира конструктор со аргументи за класата.
+Доколку е потребно да се креира и get методи.
+
+Во класата да се креира функција cheapestFlight што ќе го врати најевтиниот лет на аеродромот.
+
+ДА НЕ СЕ МЕНУВА MAIN ФУНКЦИЈАТА.
+
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class Flight {
+private:
+    char imeLet[101];   // Flight name (max 100 characters + null terminator)
+    char poletuvanjeOd[51]; // Departure location (max 50 characters + null terminator)
+    char pristignuvanjeVo[51]; // Arrival location (max 50 characters + null terminator)
+    int cenaLet;        // Flight price
+
+public:
+    // Default constructor
+    Flight() {
+        strcpy(imeLet, "");
+        strcpy(poletuvanjeOd, "");
+        strcpy(pristignuvanjeVo, "");
+        cenaLet = 0;
+    }
+
+    // Constructor with arguments
+    Flight(const char* imeLet, const char* poletuvanjeOd, const char* pristignuvanjeVo, int cenaLet) {
+        strcpy(this->imeLet, imeLet);
+        strcpy(this->poletuvanjeOd, poletuvanjeOd);
+        strcpy(this->pristignuvanjeVo, pristignuvanjeVo);
+        this->cenaLet = cenaLet;
+    }
+
+    // Copy constructor
+    Flight(const Flight &other) {
+        strcpy(this->imeLet, other.imeLet);
+        strcpy(this->poletuvanjeOd, other.poletuvanjeOd);
+        strcpy(this->pristignuvanjeVo, other.pristignuvanjeVo);
+        this->cenaLet = other.cenaLet;
+    }
+
+    // Getter for flight price
+    int getCenaLet() const {
+        return cenaLet;
+    }
+
+    // Print function for debugging
+    void print() const {
+        cout << "Flight: " << imeLet << " | From: " << poletuvanjeOd << " | To: " << pristignuvanjeVo
+             << " | Price: " << cenaLet << endl;
+    }
+};
+
+class Airport {
+private:
+    char imeAerodrom[51]; // Airport name (max 50 characters + null terminator)
+    int brojLetovi;       // Number of flights
+    Flight letovi[100];   // Array of flights (max 100)
+
+public:
+    // Constructor with arguments
+    Airport(const char* imeAerodrom, int brojLetovi, Flight letovi[]) {
+        strcpy(this->imeAerodrom, imeAerodrom);
+        this->brojLetovi = brojLetovi;
+        for (int i = 0; i < brojLetovi; i++) {
+            this->letovi[i] = letovi[i];
+        }
+    }
+
+    // Function to find the cheapest flight
+    Flight cheapestFlight() const {
+        if (brojLetovi == 0) {
+            return Flight(); // If no flights exist, return default flight
+        }
+
+        int minIndex = 0;
+        for (int i = 1; i < brojLetovi; i++) {
+            if (letovi[i].getCenaLet() < letovi[minIndex].getCenaLet()) {
+                minIndex = i;
+            }
+        }
+
+        return letovi[minIndex]; // Return the cheapest flight
+    }
+
+    // Print function for debugging
+    void print() const {
+        cout << "Airport: " << imeAerodrom << " | Number of Flights: " << brojLetovi << endl;
+        for (int i = 0; i < brojLetovi; i++) {
+            letovi[i].print();
+        }
+    }
+};
+
+
+
