@@ -726,3 +726,210 @@ int main() {
     return 0;
 }
 
+
+Да се дефинира класа MobilePhone во која ќе се чуваат податоци за еден мобилен телефон:
+
+модел (низа од карактери не подолга од 20 карактери)
+број на модел (цел број)
+година на издавање (цел број)
+За класата да се дефинира default конструктор, конструктор со аргументи, copy конструктор, деструктор и доколку има потреба get методи. Исто така да се дефинира и фунцкија за печатење на информации за класата која ќе печати во следниот формат „(модел) (број на модел) release year: (година на издавање)“.
+
+Потоа да се дефинира класа Owner во која се чуваат следните информации:
+
+име (низа од карактери не подолга од 20 карактери)
+презиме (низа од карактери не подолга од 20 карактери)
+мобилен телефон (објект од класа MobilePhone)
+Да се креира default конструктор, конструктор со аргументи, деструктор и доколку има потреба get методи. Исто така да се дефинира и функција за печатење на информации за класата која ќе печати во следниот формат: 
+
+„(име) (презиме) has a mobile phone:
+
+(информации за мобилен телефон)“
+
+ДА НЕ СЕ МЕНУВА MAIN ФУНКЦИЈАТА!!!
+
+For example:
+
+Input	
+1
+Iphone
+12
+2020
+Marko
+Petrov
+
+Result
+Marko Petrov has a mobile phone:
+Iphone 12 release year: 2020
+
+
+
+//DO NOT CHANGE THE MAIN FUNCTION
+int main() {
+    char model[20];
+    int modelNumber;
+    int year;
+    char name[20];
+    char surname[20];
+
+    int testCase;
+
+    cin>>testCase;
+
+    cin>>model;
+    cin>>modelNumber;
+    cin>>year;
+    cin>>name;
+    cin>>surname;
+
+    if(testCase==1){
+        MobilePhone mobilePhone(model,modelNumber,year);
+
+        Owner owner(name,surname,mobilePhone);
+        owner.print();
+    }
+    if(testCase==2){
+        MobilePhone mobilePhone(MobilePhone(model,modelNumber,year));
+
+        Owner owner(name,surname,mobilePhone);
+        owner.print();
+    }
+
+}
+
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+//YOUR CODE HERE
+
+class MobilePhone {
+private:
+    char model[21];
+    int modelNumber;
+    int yearOfIssue;
+
+public:
+    //Default Constructor
+    MobilePhone() {
+        strcpy(model, "");
+        modelNumber = 0;
+        yearOfIssue = 0;
+    }
+
+    //Constructor with arguments
+    MobilePhone(const char* newModel, int newModelNumber, int newYear) {
+        strcpy(model, newModel);
+        modelNumber = newModelNumber;
+        yearOfIssue = newYear;
+    }
+
+    //Copy Constructor
+    MobilePhone(const MobilePhone& other) {
+        strcpy(model, other.model);
+        modelNumber = other.modelNumber;
+        yearOfIssue = other.yearOfIssue;
+    }
+
+    //Destructor
+    ~MobilePhone() {}
+
+    //Get methods
+    const char* getModel() const {
+        return model;
+    }
+
+    int getModelNumber() const {
+        return modelNumber;
+    }
+
+    int getYearOfIssue() const {
+        return yearOfIssue;
+    }
+
+    //Prints mobile phone information
+    void print() const {
+        cout << getModel() << " " << getModelNumber() << " release year: " << getYearOfIssue() << endl;
+    }
+};
+
+class Owner {
+private:
+    char name[21];
+    char lastName[21];
+    MobilePhone mobilePhone;
+
+public:
+    
+    Owner() {
+        strcpy(name, "");
+        strcpy(lastName, "");
+        mobilePhone = MobilePhone();
+    }
+
+   
+    Owner(const char* newName, const char* newLastName, const MobilePhone& newMobilePhone) {
+        strcpy(name, newName);
+        strcpy(lastName, newLastName);
+        mobilePhone = newMobilePhone;
+    }
+
+    
+    ~Owner() {}
+
+    
+    const char* getName() const {
+        return name;
+    }
+
+    const char* getLastName() const {
+        return lastName;
+    }
+
+    const MobilePhone& getMobilePhone() const {
+        return mobilePhone;
+    }
+
+    
+    void print() const {
+        cout << getName() << " " << getLastName() << " has a mobile phone:" << endl;
+        mobilePhone.print();
+    }
+};
+
+//DO NOT CHANGE THE MAIN FUNCTION
+int main() {
+    char model[20];
+    int modelNumber;
+    int year;
+    char name[20];
+    char surname[20];
+
+    int testCase;
+
+    cin>>testCase;
+
+    cin>>model;
+    cin>>modelNumber;
+    cin>>year;
+    cin>>name;
+    cin>>surname;
+
+    if(testCase==1){
+        MobilePhone mobilePhone(model,modelNumber,year);
+
+        Owner owner(name,surname,mobilePhone);
+        owner.print();
+    }
+    if(testCase==2){
+        MobilePhone mobilePhone(MobilePhone(model,modelNumber,year));
+
+        Owner owner(name,surname,mobilePhone);
+        owner.print();
+    }
+
+}
+
+
+
