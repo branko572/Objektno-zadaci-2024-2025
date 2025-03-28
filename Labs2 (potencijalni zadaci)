@@ -1326,5 +1326,134 @@ public:
     }
 };
 
+int main() {
+    // Create flight objects
+    Flight f1("Flight A", "Skopje", "Berlin", 250);
+    Flight f2("Flight B", "Skopje", "Paris", 180);
+    Flight f3("Flight C", "Skopje", "London", 300);
+    Flight f4("Flight D", "Skopje", "Rome", 150);  // Cheapest flight
 
+    // Store flights in an array
+    Flight flights[] = {f1, f2, f3, f4};
+
+    // Create an airport with these flights
+    Airport airport("Alexander the Great", 4, flights);
+
+    // Print airport and flights
+    cout << "Airport Information:\n";
+    airport.print();
+
+    // Find and print the cheapest flight
+    cout << "\nCheapest Flight:\n";
+    Flight cheapest = airport.cheapestFlight();
+    cheapest.print();
+
+    return 0;
+}
+
+-----------------------------------------------------------------
+
+MOJA VARIJANTA:
+
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class Flight {
+private:
+    char ime[100];
+    char od[50];
+    char dest[50];
+    int cena;
+public:
+    Flight(const char *ime="rofl", const char *od="lmao", const char *dest="lol", int cena=0) {
+        ::strcpy(this->ime, ime);
+        ::strcpy(this->od, od);
+        ::strcpy(this->dest, dest);
+        this->cena = cena;
+    }
+
+    Flight(const Flight &other) {
+        ::strcpy(this->ime, other.ime);
+        ::strcpy(this->od, other.od);
+        ::strcpy(this->dest, other.dest);
+        this->cena = other.cena;
+    }
+
+    const char *getIme() const { return ime; }
+    const char *getOd() const { return od; }
+    const char *getDest() const { return dest; }
+    int getCena() const { return cena; }
+
+    void setCena(int cena) { this->cena = cena; }
+
+    void print() const {
+        cout << "Flight: " << ime << " | From: " << od << " | To: " << dest
+             << " | Price: " << cena << endl;
+    }
+};
+
+class Airport {
+private:
+    char ime[50];
+    int broj;
+    Flight flights[100];
+public:
+    Airport(const char *ime="lol", int broj=0, Flight *flights=nullptr) {
+        ::strcpy(this->ime, ime);
+        this->broj = broj;
+
+        if (flights != nullptr) {  // Check for null pointer before copying
+            for (int i = 0; i < broj; ++i) {
+                this->flights[i] = flights[i];
+            }
+        }
+    }
+
+    Flight cheapestFlight() const {
+        if (broj == 0) return Flight(); // If no flights, return default Flight
+
+        int minIndex = 0;
+        for (int i = 1; i < broj; i++) {
+            if (flights[i].getCena() < flights[minIndex].getCena()) {
+                minIndex = i;
+            }
+        }
+        return flights[minIndex]; // Return cheapest flight
+    }
+
+    void print() const { // Make print() const since it doesn't modify anything
+        cout << "Airport: " << ime << " | Number of Flights: " << broj << endl;
+        for (int i = 0; i < broj; i++) {
+            flights[i].print();
+        }
+    }
+};
+
+int main() {
+    // Create flight objects
+    Flight f1("Flight A", "Skopje", "Berlin", 250);
+    Flight f2("Flight B", "Skopje", "Paris", 180);
+    Flight f3("Flight C", "Skopje", "London", 300);
+    Flight f4("Flight D", "Skopje", "Rome", 150);  // Cheapest flight
+
+    // Store flights in an array
+    Flight flights[] = {f1, f2, f3, f4};
+
+    // Create an airport with these flights
+    Airport airport("Alexander the Great", 4, flights);
+
+    // Print airport and flights
+    cout << "Airport Information:\n";
+    airport.print();
+
+    // Find and print the cheapest flight
+    cout << "\nCheapest Flight:\n";
+    Flight cheapest = airport.cheapestFlight();
+    cheapest.print();
+
+    return 0;
+}
 
