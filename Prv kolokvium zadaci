@@ -209,3 +209,186 @@ int main() {
 
     return 0;
 }
+
+
+Задача 1
+Да се дефинира класа SMS, во која ќе се чуваат информации за датумот на пораката (објект од класа Date), содржина на пораката (низа од 150 карактери) и два телефонски броја (текстуални низи од 10 цифри за број кој испраќа и број кој прима). (10 поени) Класата Date треба да содржи три цели броеви за ден, месец и година. (5 поени)
+
+Да се напише main функција во која се чита цел броj N (max 500), a потоа информации за N пораки. Читањето на една порака е во следниот формат:
+
+dd mm yyyy број_што_праќа број_што_прима содржина. (10 поени)
+
+Потоа, треба да се прочита уште еден датум кој означува почеток на временскиот период од тој датум до денес.
+
+Пример влез:
+
+18 03 2016 070211123 071300400 I'll call you back
+
+.... пораки
+
+18 12 2017 070211123 071300400 hahah
+
+11 11 2015
+
+На екран да се испечатат сите пораки кои се пократки од 70 карактери и се направени после внесен датум (не вклучувајќи ги и пораките направени на самиот тој датум). Да се искористи посебна функција која како аргументи прима: низа од објекти од класата SMS, големина на низата со пораки (цел број) и датум (објект од класата Date) кој означува почеток на временскиот период. Доколку не постојат пораки со бараниот услов, да се испечати соодветна порака (15 поени).
+
+Форматот на печатење да се види од тест примерите.
+
+ПОМОШ: Да се вклучи библиотеката #include за датумите да се испечатат со наредбата cout << setfill('0') << setw(2) << day << "/" << setfill('0') << setw(2) << month << "/" << year
+Define the class SMS, where information about the message date (an object of the Date class), message content (an array of 150 characters), and two phone numbers (textual arrays of 10 digits for the sender and the receiver) are stored.
+
+The Date class should contain three integers for day, month, and year. (5 points)
+
+Write a main function in which an integer N (max 500) is read, followed by information for N messages. Reading a single message is in the following format:
+
+dd mm yyyy
+
+sender_number
+
+receiver_number
+
+content. (10 points)
+
+Then, another date should be read, indicating the start of the time period from that date until today.
+
+Example input:
+
+18 03 2016
+
+070211123
+
+071300400
+
+I'll call you back
+
+.... messages
+
+18 12 2017
+
+070211123
+
+071300400
+
+hahah
+
+11 11 2015
+
+Print all messages shorter than 70 characters made after the entered date (excluding messages on that exact date). Use a separate function that takes as arguments: an array of objects of the SMS class, the size of the message array (an integer), and a date (an object of the Date class) indicating the start of the time period. If there are no messages meeting the specified conditions, print an appropriate message. (15 points)
+
+The printing format should be seen from the test examples.
+
+HINT: Include the library #include to print dates using the command
+
+cout << setfill('0') << setw(2) << day << "/" << setfill('0') << setw(2) << month << "/" << year
+
+
+#include <iostream>
+#include <iomanip>
+#include <cstring>
+
+using namespace std;
+
+class Date {
+private:
+    int d, m, y;
+public:
+    Date(int d = 1, int m = 1, int y = 1900) : d(d), m(m), y(y) {}
+
+    Date(const Date &other) : d(other.d), m(other.m), y(other.y) {}
+
+    int getD() const { return d; }
+    int getM() const { return m; }
+    int getY() const { return y; }
+
+    void print() const {
+        cout << setfill('0') << setw(2) << d << "/"
+             << setfill('0') << setw(2) << m << "/" << y;
+    }
+
+    bool isAfter(const Date& other) const {
+        if (y > other.y) return true;
+        if (y < other.y) return false;
+        if (m > other.m) return true;
+        if (m < other.m) return false;
+        return d > other.d;
+    }
+
+    ~Date() {}
+};
+
+class SMS {
+private:
+    Date date;
+    char content[151];
+    char sender[11];  // 10 digits + null terminator
+    char receiver[11]; // 10 digits + null terminator
+public:
+    SMS(const Date &date = Date(), const char* content = "",
+        const char* sender = "", const char* receiver = "") : date(date) {
+        strncpy(this->content, content, 150);
+        this->content[150] = '\0';
+        strncpy(this->sender, sender, 10);
+        this->sender[10] = '\0';
+        strncpy(this->receiver, receiver, 10);
+        this->receiver[10] = '\0';
+    }
+
+    const Date& getDate() const { return date; }
+    const char* getContent() const { return content; }
+    const char* getSender() const { return sender; }
+    const char* getReceiver() const { return receiver; }
+
+    int getContentLength() const { return strlen(content); }
+
+    void print() const {
+        date.print();
+        cout << " " << sender << " " << receiver << " " << content << endl;
+    }
+
+    ~SMS() {}
+};
+
+void printFilteredMessages(SMS messages[], int n, const Date& startDate) {
+    bool found = false;
+    for (int i = 0; i < n; i++) {
+        if (messages[i].getContentLength() < 70 &&
+            messages[i].getDate().isAfter(startDate)) {
+            messages[i].print();
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "No messages found matching the criteria." << endl;
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    if (n > 500 || n <= 0) {
+        cout << "Invalid number of messages." << endl;
+        return 0;
+    }
+
+    SMS messages[500];
+
+    for (int i = 0; i < n; i++) {
+        int d, m, y;
+        char sender[11], receiver[11], content[151];
+
+        cin >> d >> m >> y >> sender >> receiver;
+        cin.ignore(); // Ignore the space before content
+        cin.getline(content, 150);
+
+        Date date(d, m, y);
+        messages[i] = SMS(date, content, sender, receiver);
+    }
+
+    int d, m, y;
+    cin >> d >> m >> y;
+    Date filterDate(d, m, y);
+
+    printFilteredMessages(messages, n, filterDate);
+
+    return 0;
+}
