@@ -1,1 +1,211 @@
+Task 1: Library Management System
+Define classes for a simple library system:
 
+Book class with:
+
+title (char array)
+
+author (char array)
+
+ISBN (char array)
+
+availableCopies (int)
+
+totalBooks (static int)
+
+Constructors and methods to display book info
+
+Static method to get total book count
+
+Library class with:
+
+name (char array)
+
+books (array of Book objects)
+
+bookCount (int)
+
+Methods to add/remove books
+
+Method to display all books
+
+External function findBooksByAuthor() that searches and displays books by a given author
+
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class Book {
+private:
+    char title[100];
+    char author[100];
+    char isbn[100];
+    int availableCopies;
+    static int totalBooks;
+public:
+    Book(const char *title="", const char *author="", const char *isbn="", int availableCopies=0) {
+        strncpy(this->title, title, 99);
+        this->title[99] = '\0';
+        strncpy(this->author, author, 99);
+        this->author[99] = '\0';
+        strncpy(this->isbn, isbn, 99);
+        this->isbn[99] = '\0';
+        this->availableCopies = availableCopies;
+        totalBooks++;
+    }
+
+    Book(const Book& other) {
+        strcpy(this->title, other.title);
+        strcpy(this->author, other.author);
+        strcpy(this->isbn, other.isbn);
+        this->availableCopies = other.availableCopies;
+        totalBooks++;
+    }
+
+    const char *getTitle() const {
+        return title;
+    }
+
+    const char *getAuthor() const {
+        return author;
+    }
+
+    const char *getIsbn() const {
+        return isbn;
+    }
+
+    int getAvailableCopies() const {
+        return availableCopies;
+    }
+
+    void setAvailableCopies(int availableCopies) {
+        this->availableCopies = availableCopies;
+    }
+
+    static int getTotalBooks() {
+        return totalBooks;
+    }
+
+    void display() const {
+        cout << "Title: " << title << "\nAuthor: " << author
+             << "\nISBN: " << isbn << "\nAvailable copies: "
+             << availableCopies << "\n";
+    }
+
+    ~Book() {
+        totalBooks--;
+    }
+};
+
+int Book::totalBooks = 0;
+
+class Library {
+private:
+    char name[100];
+    Book books[100];
+    int bookCount;
+public:
+    Library(const char *name="") {
+        strncpy(this->name, name, 99);
+        this->name[99] = '\0';
+        this->bookCount = 0;
+    }
+
+    const char *getName() const {
+        return name;
+    }
+
+    const Book *getBooks() const {
+        return books;
+    }
+
+    int getBookCount() const {
+        return bookCount;
+    }
+
+    void addBook(const Book &other) {
+        if(bookCount < 100) {
+            books[bookCount++] = other;
+        }
+    }
+
+    bool removeBook(const char* isbn) {
+        for (int i = 0; i < bookCount; ++i) {
+            if(strcmp(books[i].getIsbn(), isbn) == 0) {
+                for (int j = i; j < bookCount-1; ++j) {
+                    books[j] = books[j+1];
+                }
+                bookCount--;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void displayAllBooks() const {
+        cout << "Library: " << name << "\n";
+        cout << "Total books: " << bookCount << "\n\n";
+        for (int i = 0; i < bookCount; ++i) {
+            books[i].display();
+            cout << endl;
+        }
+    }
+
+    ~Library() {}
+};
+
+void findBooksByAuthor(const Library &library, const char *author) {
+    cout << "Books by " << author << ":\n";
+    bool found = false;
+    for (int i = 0; i < library.getBookCount(); ++i) {
+        if(strcmp(library.getBooks()[i].getAuthor(), author) == 0) {
+            library.getBooks()[i].display();
+            found = true;
+            cout << endl;
+        }
+    }
+    if(!found) {
+        cout << "No books found by this author.\n";
+    }
+}
+
+int main() {
+    Library l("City Public Library");
+
+    Book book1("1984", "George Orwell", "978-0451524935", 5);
+    Book book2("Animal Farm", "George Orwell", "978-0451526342", 3);
+    Book book3("To Kill a Mockingbird", "Harper Lee", "978-0446310789", 2);
+    Book book4("The Great Gatsby", "F. Scott Fitzgerald", "978-0743273565", 4);
+
+    l.addBook(book1);
+    l.addBook(book2);
+    l.addBook(book3);
+    l.addBook(book4);
+
+    // Display all books
+    cout << "--- All Books in Library ---\n";
+    l.displayAllBooks();
+
+    // Find books by author
+    cout << "--- Books by George Orwell ---\n";
+    findBooksByAuthor(l, "George Orwell");
+
+    // Remove a book
+    cout << "--- Removing a Book ---\n";
+    if (l.removeBook("978-0451526342")) {
+        cout << "Book removed successfully.\n";
+    } else {
+        cout << "Book not found.\n";
+    }
+
+    // Display updated list
+    cout << "\n--- Updated Book List ---\n";
+    l.displayAllBooks();
+
+    // Show total books in system
+    cout << "Total books in system: " << Book::getTotalBooks() << endl;
+
+    return 0;
+}
