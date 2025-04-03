@@ -1,3 +1,4 @@
+
 Да се дефинира класа Tour за која се чуваат слецните податоци:
 
 destination - char[]
@@ -33,4 +34,89 @@ Travel Agency: [name]
 
 
 
-Надвор од класата да се дефинира метод void findBestAgency(Agency *agencies, int numAgencies) кој прима низа од агении и ја печати онаа агенција која остварила најмногу профит од сите тури. Овој метод мора да пристапува до самите приватни полиња од класите.
+Надвор од класата да се дефинира метод void findBestAgency(Agency *agencies, int numAgencies)
+кој прима низа од агении и ја печати онаа агенција која остварила најмногу профит од сите тури. Овој метод мора да пристапува до самите приватни полиња од класите.
+
+
+
+int main() {
+
+
+    int test_case_n;
+
+    char name[50];
+    char dest[50];
+    int dur;
+    double pr;
+    int pass;
+
+    cin>>test_case_n;
+
+    if (test_case_n == 0) {
+        cout << "Testing Tour c-tors, display function:"<<endl;
+        cin >> dest >> dur >> pr >> pass;
+        Tour t1 = Tour(dest, dur, pr, pass);
+        Tour t2 = Tour(t1);
+        t1.display();
+        t2.display();
+    } else if (test_case_n == 1) {
+        cout << "Testing Tour profitByTour function:"<<endl;
+        cin >> dest >> dur >> pr >> pass;
+        Tour t1 = Tour(dest, dur, pr, pass);
+        cout<<t1.profitByTour()<<endl;
+    } else if (test_case_n == 2) {
+        cout << "Testing Agency c-tor, display function:"<<endl;
+
+        Agency agency;
+
+        cin>>name;
+        agency.setName(name);
+        int numTours;
+        cin>>numTours;
+        for (int j = 0; j < numTours; ++j) {
+            cin>>dest>>dur>>pr>>pass;
+            agency.addTour(Tour(dest, dur, pr, pass));
+        }
+
+        agency.display();
+
+
+    } else if (test_case_n == 3) {
+        cout << "Testing static field in Tour:" <<endl;
+
+        Agency agency [10];
+        int n;
+        cin >> n;
+
+        for (int i = 0; i < n ; ++i) {
+            cin>>name;
+            agency[i].setName(name);
+            int numTours;
+            cin>>numTours;
+            for (int j = 0; j < numTours; ++j) {
+                cin>>dest>>dur>>pr>>pass;
+            agency[i].addTour(Tour(dest, dur, pr, pass));
+            }
+        }
+        cout<<"Total number of tours: "<<Tour::getNumTours()<<endl;
+
+    } else if (test_case_n == 4) {
+        Agency agency [10];
+        int n;
+        cin >> n;
+        for (int i = 0; i < n ; ++i) {
+            cin>>name;
+   agency[i].setName(name);
+            int numTours;
+            cin>>numTours;
+            for (int j = 0; j < numTours; ++j) {
+ cin>>dest>>dur>>pr>>pass; agency[i].addTour(Tour(dest, dur, pr, pass));
+            }
+        }
+        findBestAgency(agency, n);
+    }
+    return 0;
+}
+
+
+
