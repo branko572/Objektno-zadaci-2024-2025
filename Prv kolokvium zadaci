@@ -392,3 +392,256 @@ int main() {
 
     return 0;
 }
+
+
+
+Задача 2
+Да се дефинира класа Book, која репрезентира една книга. За класата Book се чуваат:
+
+Наслов (текстуална низа од 30 знаци)
+
+Сериски број (цел број)
+
+Тип на книга (енумерациски тип, стручна литература или роман)
+
+Цена (децимален број)
+
+Серискиот број е единствен за секоја книга, неговата почетна вредност е 777550. Да се обезбеди секвенцијално генерирање на овој број, така што првата книга ќе има сериски број 777551, втората 777552, третата 777553 итн. (5 поени)
+
+За оваа класа да се обезбедат потребните конструктори и set/get методи. (5 поени)
+
+Да се имплементира метод print() со кој ќе се печатат информациите за секој објект во формат: [сериски број] - [наслов] [тип] [цена] (5 поени)
+
+Да се имплементира метод increasePrice(float) кој како аргумент ќе прима реален број, што ќе претставува износ кој се додава на цената на книгата. (5 поени)
+
+Потоа да се дефинира класа BookStore, во која се чуваат информации за:
+
+Име (текстуална низа од 20 знаци)
+
+Листа од книги (обична низа со максимум 100 објекти од класата Book)
+
+Број на книги (број на елементи во низата од книги, иницијално е 0)
+
+За оваа класа да се дефинираат потребните конструктори, деструктор (ако е потребен), set и get методи. (5 поени)
+
+Да се имплементира метод print() во формат: [име] и потоа сите книги поединечно (види форматот од методот Book::print). (5 поени)
+
+Да се имплементира метод addBook(const Book&) за додавање нова книга во продавницата. Книгите се менаџираат според нивниот наслов, односно не смее да се дозволи додавање книга со ист наслов повеќе од еднаш. (10 поени)
+
+Да се дефинира метод greaterThan(const BookStore&) кој ќе споредува дали едната продавница има повеќе книги од другата. (5 поени)
+
+Да се дефинира метод void createMarketPrice() - со кој продавницата генерира продажни цени на сите книги. Продажните цени се пресметуваат во зависност од тоа за каков тип на литература станува збор:
+
+За стручна литература се додава 5% на цената
+
+За романи се додава 3% (10 поени)
+
+Да се дефинира глобална функција best() - која прима низа од објекти од класатa BookStore и бројот на продавници, а ја враќа онаа продавница која има најмногу книги. Доколку повеќе продавници имаат ист број на книги, се враќа првата најдена. (5 поени)
+
+Define the class Book, which represents a single book. The class holds the following attributes:
+
+title – a textual array of up to 30 characters
+
+id – serial number (integer)
+
+type – enumerated type representing the book type: academic or roman
+
+price – decimal number
+
+The serial number is unique for each book. The initial value is 777550. Ensure sequential generation of this number, so that the first book has serial number 777551, the second 777552, the third 777553, etc. (5 points)
+
+Provide the necessary constructors and set/get methods. (5 points)
+
+Implement a method print() which prints the information in the following format: [serial number] - [title] [type] [price] (5 points)
+
+Implement a method increasePrice(float) that takes a real number representing the margin, and adds it to the book's price. (5 points)
+
+Then define the class BookStore, which stores information about:
+
+Name (textual array of up to 20 characters)
+
+List of books (regular array of up to 100 Book objects)
+
+Number of books (number of elements in the array, initially 0)
+
+Define the necessary constructors, destructor (if needed), and set/get methods. (5 points)
+
+Implement a method print() in the following format: [name] and then all books printed individually (see format from the Book::print method). (5 points)
+
+Implement a method addBook(const Book&) to add a new book to the store. Books are managed based on their title, and adding a book with an already existing title is not allowed. (10 points)
+
+Define a method greaterThan(const BookStore&) to compare two stores by the number of books. (5 points)
+
+Define a method void createMarketPrice() that generates selling prices for all books in the store. The selling prices depend on the book type:
+
+For academic literature, 5% is added to the price
+
+For romans, 3% is added (10 points)
+
+Define a global function best() that takes an array of BookStore objects and the number of stores, and returns the store with the most books. If multiple stores have the same number of books, the first one is returned. (5 points)
+
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+enum Type { academic, novel };
+
+class Book {
+private:
+    char title[30];
+    int serial;
+    Type type;
+    double price;
+    static int object;
+public:
+    Book(const char *title = "w", Type type = academic, double price = 0) {
+        strcpy(this->title, title);
+        this->type = type;
+        this->serial = 777550 + object;
+        this->price = price;
+        object++;
+    }
+
+    const char* getTitle() const {
+        return title;
+    }
+
+    int getSerial() const {
+        return serial;
+    }
+
+    Type getType() const {
+        return type;
+    }
+
+    double getPrice() const {
+        return price;
+    }
+
+    void setPrice(double price) {
+        this->price = price;
+    }
+
+    void increasePrice(float amount) {
+        price += amount;
+    }
+
+    void print() const {
+        cout << serial << " - " << title << " ";
+        cout << (type == academic ? "academic " : "novel ") << price << endl;
+    }
+};
+
+int Book::object = 0;
+
+class BookStore {
+private:
+    char name[20];
+    Book books[100];
+    int n;
+public:
+    BookStore(const char *name) {
+        this->n = 0;
+        strcpy(this->name, name);
+    }
+
+    void addBook(const Book& other) {
+        // Check for duplicate title
+        for (int i = 0; i < n; i++) {
+            if (strcmp(books[i].getTitle(), other.getTitle()) == 0) {
+                return; // Don't add duplicate titles
+            }
+        }
+        if (n < 100) {
+            books[n++] = other;
+        }
+    }
+
+    int getN() const {
+        return n;
+    }
+
+    bool greaterThan(const BookStore& other) const {
+        return n > other.n;
+    }
+
+    void createMarketPrice() {
+        for (int i = 0; i < n; i++) {
+            if (books[i].getType() == academic) {
+                books[i].setPrice(books[i].getPrice() * 1.05);
+            } else if (books[i].getType() == novel) {
+                books[i].setPrice(books[i].getPrice() * 1.03);
+            }
+        }
+    }
+
+    void print() const {
+        cout << name << endl;
+        for (int i = 0; i < n; i++) {
+            books[i].print();
+        }
+    }
+};
+
+BookStore best(BookStore stores[], int numStores) {
+    if (numStores == 0) return stores[0]; // Assuming there's at least one store
+
+    BookStore *bestStore = &stores[0]; // Start with first store
+
+    for (int i = 1; i < numStores; i++) {
+        if (stores[i].getN() > bestStore->getN()) {
+            bestStore = &stores[i];
+        }
+    }
+
+    return *bestStore; // Return the store with most books
+}
+
+int main() {
+    // Create bookstores
+    BookStore storeA("Tech Library");
+    BookStore storeB("Novel Store");
+
+    // Add books to storeA
+    storeA.addBook(Book("C++ Programming", academic, 100.00));
+    storeA.addBook(Book("Data Structures", academic, 120.00));
+
+    // Add books to storeB
+    storeB.addBook(Book("Harry Potter", novel, 50.00));
+    storeB.addBook(Book("The Hobbit", novel, 40.00));
+    storeB.addBook(Book("Dune", novel, 70.00));
+
+    cout << "Before applying price increase:\n";
+    storeA.print();
+    storeB.print();
+
+    // Use increasePrice for a specific book
+    storeA.createMarketPrice();  // Apply market price
+    storeB.createMarketPrice();  // Apply market price
+
+    // Increase price of specific book in storeA
+    storeA.addBook(Book("Advanced C++", academic, 200.00));
+    storeA.addBook(Book("Python Programming", academic, 150.00));
+
+    cout << "\nAfter market price adjustments:\n";
+    storeA.print();
+    storeB.print();
+
+    // Compare stores by number of books
+    if (storeA.greaterThan(storeB)) {
+        cout << "\nStore A has more books than Store B.\n";
+    } else {
+        cout << "\nStore B has more books than Store A.\n";
+    }
+
+    // Find the best store with the most books
+    BookStore stores[] = {storeA, storeB};
+    BookStore bestStore = best(stores, 2);
+
+    cout << "\nThe best store is:\n";
+    bestStore.print();
+
+    return 0;
+}
