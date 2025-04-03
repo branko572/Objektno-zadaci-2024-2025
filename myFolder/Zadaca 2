@@ -66,3 +66,403 @@ int main() {
 
     return 0;
 }
+
+
+
+
+
+
+
+
+
+#include <iostream>
+#include <cstring>
+#include <iomanip>
+using namespace std;
+
+class List{
+private:
+    int broj;
+    int niza[100];
+public:
+    List(int *niza= nullptr ,int broj=0) {
+
+        if(broj>100){
+            this->broj=100;
+        } else{
+            this->broj=broj;
+        }
+
+        if (niza != nullptr) {
+            for (int i = 0; i < this->broj; i++) {
+                this->niza[i] = niza[i];
+            }
+        }
+
+        for (int i = this->broj; i < 100; i++) {
+            this->niza[i] = 0;
+        }
+
+    }
+
+    int getBroj() const {
+        return broj;
+    }
+
+    void setBroj(int broj) {
+        List::broj = broj;
+    }
+
+    const int *getNiza() const {
+        return niza;
+    }
+
+    int sum(){
+        int sum=0;
+        for(int i=0;i<broj;i++){
+             sum+=niza[i];
+        }
+        return sum;
+
+    }
+
+
+    double prosek(){
+        if(broj==0){
+            return 0;
+        }
+        return static_cast<double>(sum()) / broj;
+    }
+
+
+//    [број на елементи во листата]: x1 x2 .. xn sum: [сума] average: [просек]
+    void pecati(){
+
+        for (int i = 0; i <broj ; ++i) {
+            cout<<niza[i]<<" ";
+        }
+        cout << "sum: " << sum() << " average: "
+             << fixed << setprecision(2) << prosek() << endl;
+
+    }
+
+
+        ~List(){}
+
+};
+
+
+//Креирајте класа `ListContainer`:
+//Оваа класа ќе складира информации за:
+//1. Низа од објекти „Список“ (фиксна низа до 100 lists)
+//2. Број на елементи во низата List (цел број)
+//3. Број на обиди за додавање листа во контејнерот (цел број иницијализиран на нула)
+
+
+class ListContainer{
+private:
+ List list[100];
+ int n;
+ int attempts;
+public:
+    ListContainer(List *list= nullptr, int n=0, int attempts=0) {
+        if (n > 100) {
+            this->n = 100;
+        }
+        else if (n < 0) {
+            this->n = 0;
+        }
+        else {
+            this->n = n;
+        }
+        this->attempts=attempts;
+        for (int i = 0; i < this->n; ++i) {
+            this->list[i]=list[i];
+        }
+    }
+
+    ListContainer(const ListContainer& lc){
+        this->n=lc.n;
+        this->attempts=lc.attempts;
+        for (int i = 0; i <lc.n; ++i) {
+            this->list[i]=lc.list[i];
+        }
+    }
+
+//    `int sum()` Метод:
+//            - Го враќа збирот на сите броеви во сите списоци во контејнерот.
+//    5. Метод на `double average()`:
+//    - Го враќа просекот на сите броеви во сите списоци во контејнерот.
+
+    int sum() {
+        int total = 0;
+        for (int i = 0; i < n; ++i) {
+            total += list[i].sum();
+        }
+        return total;
+    }
+
+
+    double average() {
+        if (n == 0) return 0.0;  // Handle division by zero
+        double total = 0.0;
+        int element_count = 0;
+
+        for (int i = 0; i < n; ++i) {
+            total += list[i].sum();
+            element_count += list[i].getBroj();  // Requires getBroj() in List class
+        }
+
+        return total / element_count;
+    }
+
+//    Метод на `void addNewList(List l)`:
+//    - Додава список во контејнерот **само ако неговата сума е единствена** (не еднаква на збирот на која било постоечка листа во контејнерот).
+//    - Го зголемува бројачот на `addAttempts` без разлика дали списокот е додаден.
+    void addNewList(List l){
+        attempts++;  // Always increment attempts
+
+        // Check if container is full
+        if (n >= 100) {
+            cout << "List container is full!" << endl;
+            return;
+        }
+
+        // Check for unique sum
+        bool sum_exists = false;
+        int new_sum = l.sum();
+        for (int i = 0; i < n; ++i) {
+            if (list[i].sum() == new_sum) {
+                sum_exists = true;
+                break;
+            }
+        }
+
+        if (!sum_exists) {
+            list[n++] = l;
+        } else {
+            cout << "List with sum " << new_sum << " already exists!" << endl;
+        }
+
+
+    }
+
+    void pecati() {
+        if (n == 0) {
+            cout << "The list is empty" << endl;
+            return;
+        }
+
+        for (int i = 0; i < n; ++i) {
+            cout << "List number: " << i+1 << " List info: ";
+            list[i].pecati();
+        }
+        cout << "Sum: " << sum() << endl;
+        cout << "Average: " << fixed << setprecision(2) << average() << endl;
+        cout << "Successful attempts: " << n << " Failed attempts: " << attempts - n << endl;
+    }
+
+
+    ~ListContainer(){}
+
+};
+
+int main() {
+    ListContainer lc;
+    int N;
+    cin >> N;
+
+    for (int i = 0; i < N; i++) {
+        int n;
+        int niza[100];
+
+        cin >> n;
+        for (int j = 0; j < n; j++) {
+            cin >> niza[j];
+        }
+
+        List l(niza, n);
+        lc.addNewList(l);
+    }
+
+    int testCase;
+    cin >> testCase;
+
+    if (testCase == 1) {
+        lc.pecati();
+    } else {
+        cout << "Sum: " << lc.sum() << endl;
+        cout << "Average: " << lc.average() << endl;
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+---------------------------------------------------------------------------------------
+
+
+#include <iostream>
+#include <cstring>
+#include <iomanip>
+using namespace std;
+
+class List {
+private:
+    int broj;
+    int niza[100];
+public:
+    List(int *niza = nullptr, int broj = 0) {
+        if (broj > 100) {
+            this->broj = 100;
+        } else {
+            this->broj = broj;
+        }
+
+        if (niza != nullptr) {
+            for (int i = 0; i < this->broj; i++) {
+                this->niza[i] = niza[i];
+            }
+        }
+
+        for (int i = this->broj; i < 100; i++) {
+            this->niza[i] = 0;
+        }
+    }
+
+    int getBroj() const {
+        return broj;
+    }
+
+    int sum() {
+        int sum = 0;
+        for (int i = 0; i < broj; i++) {
+            sum += niza[i];
+        }
+        return sum;
+    }
+
+    double prosek() {
+        if (broj == 0) {
+            return 0;
+        }
+        return static_cast<double>(sum()) / broj;
+    }
+
+    void pecati() {
+        cout << "[" << broj << "]: ";
+        for (int i = 0; i < broj; ++i) {
+            cout << niza[i] << " ";
+        }
+        cout << "sum: " << sum() << " average: "
+             << fixed << setprecision(2) << prosek() << endl;
+    }
+
+    ~List() {}
+};
+
+class ListContainer {
+private:
+    List lists[100];
+    int n;
+    int attempts;
+public:
+    ListContainer() : n(0), attempts(0) {}
+
+    int sum() {
+        int total = 0;
+        for (int i = 0; i < n; ++i) {
+            total += lists[i].sum();
+        }
+        return total;
+    }
+
+    double average() {
+        if (n == 0) return 0.0;
+        double total = 0.0;
+        int element_count = 0;
+
+        for (int i = 0; i < n; ++i) {
+            total += lists[i].sum();
+            element_count += lists[i].getBroj();
+        }
+
+        return total / element_count;
+    }
+
+    void addNewList(List l) {
+        attempts++;
+
+        if (n >= 100) {
+            cout << "List container is full!" << endl;
+            return;
+        }
+
+        bool sum_exists = false;
+        int new_sum = l.sum();
+        for (int i = 0; i < n; ++i) {
+            if (lists[i].sum() == new_sum) {
+                sum_exists = true;
+                break;
+            }
+        }
+
+        if (!sum_exists) {
+            lists[n++] = l;
+        } else {
+            cout << "List with sum " << new_sum << " already exists!" << endl;
+        }
+    }
+
+    void pecati() {
+        if (n == 0) {
+            cout << "The list is empty" << endl;
+            return;
+        }
+
+        for (int i = 0; i < n; ++i) {
+            cout << "List number: " << i+1 << " List info: ";
+            lists[i].pecati();
+        }
+        cout << "Sum: " << sum() << endl;
+        cout << "Average: " << fixed << setprecision(2) << average() << endl;
+        cout << "Successful attempts: " << n << " Failed attempts: " << attempts - n << endl;
+    }
+
+    ~ListContainer() {}
+};
+
+int main() {
+    ListContainer lc;
+    int N;
+    cin >> N;
+
+    for (int i = 0; i < N; i++) {
+        int n;
+        int niza[100];
+
+        cin >> n;
+        for (int j = 0; j < n; j++) {
+            cin >> niza[j];
+        }
+
+        List l(niza, n);
+        lc.addNewList(l);
+    }
+
+    int testCase;
+    cin >> testCase;
+
+    if (testCase == 1) {
+        lc.pecati();
+    } else {
+        cout << "Sum: " << lc.sum() << endl;
+        cout << "Average: " << lc.average() << endl;
+    }
+
+    return 0;
+}
