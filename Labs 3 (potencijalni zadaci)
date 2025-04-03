@@ -120,3 +120,424 @@ int main() {
 
 
 
+
+
+#include <iostream>
+#include <cstring>
+#include <cmath>
+#include <cctype>
+#include <iomanip>
+#include <string>
+
+using namespace std;
+
+class Tour {
+private:
+    char destination[100];
+    int duration;
+    double price;
+    static int totalTours;  // Static variable to count total tours
+    int passengers;
+
+public:
+    Tour(char *destination = "w", int duration = 0, double price = 0, int passengers = 0) {
+        ::strcpy(this->destination, destination);
+        this->duration = duration;
+        this->price = price;
+        this->passengers = passengers;
+        totalTours++;  // Increment totalTours whenever a new tour is created
+    }
+
+    Tour(const Tour &t) {
+        ::strcpy(this->destination, t.destination);
+        this->duration = t.duration;
+        this->price = t.price;
+        this->passengers = t.passengers;
+    }
+
+    const char *getDestination() const {
+        return destination;
+    }
+
+    int getDuration() const {
+        return duration;
+    }
+
+    void setDuration(int duration) {
+        this->duration = duration;
+    }
+
+    double getPrice() const {
+        return price;
+    }
+
+    void setPrice(double price) {
+        this->price = price;
+    }
+
+    static int getNumTours() {
+        return totalTours;
+    }
+
+    static void setTotalTours(int totalTours) {
+        Tour::totalTours = totalTours;
+    }
+
+    int getPassengers() const {
+        return passengers;
+    }
+
+    void setPassengers(int passengers) {
+        this->passengers = passengers;
+    }
+
+    double profitByTour() {
+        return passengers * price;  // Calculate the profit from the number of passengers
+    }
+
+    void display() {
+        cout << "Destination: " << destination << ", Duration: " << duration
+             << " days, Price: " << price << ", Passengers: " << passengers << endl;
+    }
+
+    ~Tour() {}
+
+};
+
+int Tour::totalTours = 0;  // Initialize static variable
+
+class Agency {
+private:
+    char name[100];
+    Tour tour[10];  // Array to store up to 10 tours
+    int numTours;
+
+public:
+    Agency(char *name = "w") {
+        ::strcpy(this->name, name);
+        this->numTours = 0;
+    }
+
+    const char *getName() const {
+        return name;
+    }
+
+    const Tour *getTour() const {
+        return tour;
+    }
+
+    int getNumTours() const {
+        return numTours;
+    }
+
+    void setNumTours(int numTours) {
+        this->numTours = numTours;
+    }
+
+    void setName(char *name) {
+        ::strcpy(this->name, name);
+    }
+
+    void addTour(const Tour& other) {
+        if (numTours < 10) {
+            tour[numTours++] = other;
+        } else {
+            cout << "Cannot add more tours, maximum limit reached!" << endl;
+        }
+    }
+
+    double getProfit() {
+        double profit = 0;
+        for (int i = 0; i < numTours; ++i) {
+            profit += tour[i].profitByTour();
+        }
+        return profit;
+    }
+
+    void display() {
+        cout << "Travel Agency: " << name << endl;
+        for (int i = 0; i < numTours; ++i) {
+            tour[i].display();
+        }
+    }
+
+    ~Agency() {}
+};
+
+// Function to find the agency with the highest profit
+void findBestAgency(Agency *agencies, int numAgencies) {
+    Agency *bestAgency = &agencies[0];  // Start with the first agency
+    double maxProfit = agencies[0].getProfit();  // Initialize maxProfit to the first agency's profit
+
+    for (int i = 1; i < numAgencies; ++i) {  // Start from the second agency
+        double currentProfit = agencies[i].getProfit();  // Get the current agency's profit
+        if (currentProfit > maxProfit) {  // If the current profit is higher than maxProfit
+            maxProfit = currentProfit;  // Update maxProfit
+            bestAgency = &agencies[i];  // Update the best agency
+        }
+    }
+
+    // Print the agency with the highest profit
+    cout << "The agency with the highest profit is: " << bestAgency->getName()
+         << " with a profit of " << maxProfit << endl;
+}
+
+int main() {
+
+    int test_case_n;
+
+    char name[50];
+    char dest[50];
+    int dur;
+    double pr;
+    int pass;
+
+    cin >> test_case_n;
+
+    if (test_case_n == 0) {
+        cout << "Testing Tour c-tors, display function:" << endl;
+        cin >> dest >> dur >> pr >> pass;
+        Tour t1 = Tour(dest, dur, pr, pass);
+        Tour t2 = Tour(t1);
+        t1.display();
+        t2.display();
+    } else if (test_case_n == 1) {
+        cout << "Testing Tour profitByTour function:" << endl;
+        cin >> dest >> dur >> pr >> pass;
+        Tour t1 = Tour(dest, dur, pr, pass);
+        cout << t1.profitByTour() << endl;
+    } else if (test_case_n == 2) {
+        cout << "Testing Agency c-tor, display function:" << endl;
+
+        Agency agency;
+
+        cin >> name;
+        agency.setName(name);
+        int numTours;
+        cin >> numTours;
+        for (int j = 0; j < numTours; ++j) {
+            cin >> dest >> dur >> pr >> pass;
+            agency.addTour(Tour(dest, dur, pr, pass));
+        }
+
+        agency.display();
+
+    } else if (test_case_n == 3) {
+        cout << "Testing static field in Tour:" << endl;
+
+        Agency agency[10];
+        int n;
+        cin >> n;
+
+        for (int i = 0; i < n; ++i) {
+            cin >> name;
+            agency[i].setName(name);
+            int numTours;
+            cin >> numTours;
+            for (int j = 0; j < numTours; ++j) {
+                cin >> dest >> dur >> pr >> pass;
+                agency[i].addTour(Tour(dest, dur, pr, pass));
+            }
+        }
+        cout << "Total number of tours: " << Tour::getNumTours() << endl;
+
+    } else if (test_case_n == 4) {
+        Agency agency[10];
+        int n;
+        cin >> n;
+        for (int i = 0; i < n; ++i) {
+            cin >> name;
+            agency[i].setName(name);
+            int numTours;
+            cin >> numTours;
+            for (int j = 0; j < numTours; ++j) {
+                cin >> dest >> dur >> pr >> pass;
+                agency[i].addTour(Tour(dest, dur, pr, pass));
+            }
+        }
+        findBestAgency(agency, n);
+    }
+    return 0;
+}
+
+
+
+------------------------------------------------------------------------------------------------
+
+
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class Tour {
+private:
+    char destination[100];
+    int duration;
+    double price;
+    static int totalTours;
+    int passengers;
+
+public:
+    Tour() {}
+
+    Tour(const char destination[], int duration, double price, int passengers) {
+        strcpy(this->destination, destination);
+        this->duration = duration;
+        this->price = price;
+        this->passengers = passengers;
+        totalTours++;
+    }
+
+    double profitByTour() {
+        return passengers * price;
+    }
+
+    void display() {
+        cout << "Destination: " << destination << ", Duration: " << duration << " days, Price: " << price << ", Passengers: " << passengers << endl;
+    }
+
+    static int getNumTours() {  // ✅ Fixed static function
+        return totalTours;
+    }
+
+    ~Tour() {}
+    friend class Agency;
+};
+
+int Tour::totalTours = 0;
+
+class Agency {
+private:
+    char name[30];
+    Tour tours[10];
+    int numTours;
+
+public:
+    Agency() { numTours = 0; }
+
+    Agency(char name[], Tour tours[10], int numTours) {
+        strcpy(this->name, name);
+        for (int i = 0; i < numTours; i++) {
+            this->tours[i] = tours[i];
+        }
+        this->numTours = numTours;
+    }
+
+    void setName(char n[30]) {
+        strcpy(name, n);
+    }
+
+    void display() {
+        cout << name << endl;
+        for (int i = 0; i < numTours; i++) {
+            tours[i].display();
+        }
+    }
+
+    void addTour(Tour tour) {
+        if (numTours < 10) {
+            tours[numTours++] = tour;
+        }
+    }
+
+    int getNumTours() {
+        return numTours;
+    }
+
+    char* getName() { return name; } 
+    Tour* getTours() { return tours; } 
+
+    ~Agency() {}
+};
+
+void findBestAgency(Agency *agencies, int numAgencies) {
+    int bestIndex = 0;
+    double maxProfit = -1;
+
+    for (int i = 0; i < numAgencies; i++) {
+        double totalProfit = 0;
+
+        for (int j = 0; j < agencies[i].getNumTours(); j++) {
+            totalProfit += agencies[i].getTours()[j].profitByTour();
+        }
+
+        if (totalProfit > maxProfit) {
+            maxProfit = totalProfit;
+            bestIndex = i;
+        }
+    }
+
+    cout << "Best agency: " << agencies[bestIndex].getName() << " with profit: " << maxProfit << endl;
+}
+
+int main() {
+    int test_case_n;
+    char name[50], dest[50];
+    int dur, pass;
+    double pr;
+
+    cin >> test_case_n;
+
+    if (test_case_n == 0) {
+        cout << "Testing Tour c-tors, display function:" << endl;
+        cin >> dest >> dur >> pr >> pass;
+        Tour t1 = Tour(dest, dur, pr, pass);
+        Tour t2 = Tour(t1);
+        t1.display();
+        t2.display();
+    } else if (test_case_n == 1) {
+        cout << "Testing Tour profitByTour function:" << endl;
+        cin >> dest >> dur >> pr >> pass;
+        Tour t1 = Tour(dest, dur, pr, pass);
+        cout << t1.profitByTour() << endl;
+    } else if (test_case_n == 2) {
+        cout << "Testing Agency c-tor, display function:" << endl;
+        Agency agency;
+        cin >> name;
+        agency.setName(name);
+        int numTours;
+        cin >> numTours;
+        for (int j = 0; j < numTours; ++j) {
+            cin >> dest >> dur >> pr >> pass;
+            agency.addTour(Tour(dest, dur, pr, pass));
+        }
+        agency.display();
+    } else if (test_case_n == 3) {
+        cout << "Testing static field in Tour:" << endl;
+        Agency agency[10];
+        int n;
+        cin >> n;
+        for (int i = 0; i < n; ++i) {
+            cin >> name;
+            agency[i].setName(name);
+            int numTours;
+            cin >> numTours;
+            for (int j = 0; j < numTours; ++j) {
+                cin >> dest >> dur >> pr >> pass;
+                agency[i].addTour(Tour(dest, dur, pr, pass));
+            }
+        }
+        cout << "Total number of tours: " << Tour::getNumTours() << endl;
+    } else if (test_case_n == 4) {
+        Agency agency[10];
+        int n;
+        cin >> n;
+        for (int i = 0; i < n; ++i) {
+            cin >> name;
+            agency[i].setName(name);
+            int numTours;
+            cin >> numTours;
+            for (int j = 0; j < numTours; ++j) {
+                cin >> dest >> dur >> pr >> pass;
+                agency[i].addTour(Tour(dest, dur, pr, pass));
+            }
+        }
+        findBestAgency(agency, n);
+    }
+    return 0;
+}
+
+
+
