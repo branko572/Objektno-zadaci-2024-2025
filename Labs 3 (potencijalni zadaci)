@@ -120,7 +120,284 @@ int main() {
 
 
 
+TOCNA VARIJANTA:
 
+
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+#include <cstring>
+
+
+using namespace std;
+
+
+class Tour{
+
+private:
+        char destination[100];
+        int duration;
+        double price;
+        static int totalTours;
+        int passengers;
+public:
+    // Default constructor
+    Tour() {
+        strcpy(destination, "");
+        duration = 0;
+        price = 0.0;
+        passengers = 0;
+    }
+
+    // Constructor with arguments
+    Tour(const char* destination, int duration, double price, int passengers) {
+        strcpy(this->destination, destination);
+        this->duration = duration;
+        this->price = price;
+        this->passengers = passengers;
+        totalTours++;  // Only increment when a new object is created, not on copy
+    }
+
+    // Copy constructor (doesn't modify static variable)
+    Tour(const Tour& t) {
+        strcpy(this->destination, t.destination);
+        this->duration = t.duration;
+        this->price = t.price;
+        this->passengers = t.passengers;
+        // Don't increment totalTours here - only when a new object is created
+    }
+    static int getNumTours(){
+        return totalTours;
+        };
+
+
+    double profitByTour() const{
+            return passengers*price;
+        }
+
+
+
+
+
+
+    void display(){
+//            Destination: [destination], Duration: [duration] days, Price: [price], Passengers: [passengers]
+            cout<<"Destination: "<<destination<<", Duration: "<<duration<<" days, Price: "<<price<<", Passengers: "<<passengers<<endl;
+        }
+
+//
+//    За класата да се дефинира метод double profitByTour() со која се пресметува остварениот профит од дадената тура. (бројот на патници * цената на турата)
+//
+//    Да се креира и display метода во следниот формат:
+//
+
+
+
+};
+
+int Tour::totalTours=0;
+//Потоа да се дефинира класа  Agency за која се чува:
+//
+//name - char[]
+//tours - низа од Tour која нема да има повеќе од 10 елементи
+//        numTours - int
+
+
+class Agency{
+private:
+    char name[100];
+    Tour tours[10];
+    int numTours;
+public:
+    Agency(const char *name="w"){
+        ::strcpy(this->name,name);
+        this->numTours=0;
+
+    }
+
+
+    const char *getName() const {
+        return name;
+    }
+
+    void setName(const char *name){
+        ::strcpy(this->name,name);
+    }
+
+    const Tour *getTours() const {
+        return tours;
+    }
+
+
+    void setNumTours(int numTours) {
+        Agency::numTours = numTours;
+    }
+
+
+    void addTour( Tour tour){
+        if(numTours<10){
+            tours[numTours++]=tour;
+        }
+    }
+
+    double getProfit() {
+        double profit = 0;
+        for (int i = 0; i < numTours; ++i) {
+            profit += tours[i].profitByTour();
+        }
+        return profit;
+    }
+
+
+//    За класата да се дефинира default конструктор, конструктор со аргументи.
+//
+
+        void display(){
+        cout<<"Travel Agency: "<<name<<endl;
+            for (int i = 0; i < numTours; ++i) {
+                tours[i].display();
+            }
+    }
+
+//    Да се креира и display метода во следниот формат:
+//
+//            Travel Agency: [name]
+//    [tour1 display]
+//    [tour2 display]
+//    ...
+//
+//    Исто така да се дефинира метода void addTour(Tour tour) со која ќе се додаваат тури во агенцијата.
+
+
+
+
+};
+
+
+
+
+
+//Надвор од класата да се дефинира метод void findBestAgency(Agency *agencies, int numAgencies)
+//кој прима низа од агении и ја печати онаа агенција која остварила најмногу профит од сите тури.
+//Овој метод мора да пристапува до самите приватни полиња од класите.
+
+
+void findBestAgency(Agency *agencies, int numAgencies){
+
+    double maxProfit = agencies[0].getProfit();
+    int maxIndex = 0;
+
+    for (int i = 1; i < numAgencies; ++i) {
+        double profit = agencies[i].getProfit();
+        if (profit > maxProfit) {
+            maxProfit = profit;
+            maxIndex = i;
+        }
+    }
+
+    agencies[maxIndex].display();
+
+
+}
+
+
+int main() {
+
+
+    int test_case_n;
+
+    char name[50];
+    char dest[50];
+    int dur;
+    double pr;
+    int pass;
+
+    cin>>test_case_n;
+
+    if (test_case_n == 0) {
+        cout << "Testing Tour c-tors, display function:"<<endl;
+        cin >> dest >> dur >> pr >> pass;
+        Tour t1 = Tour(dest, dur, pr, pass);
+        Tour t2 = Tour(t1);
+        t1.display();
+        t2.display();
+    } else if (test_case_n == 1) {
+        cout << "Testing Tour profitByTour function:"<<endl;
+        cin >> dest >> dur >> pr >> pass;
+        Tour t1 = Tour(dest, dur, pr, pass);
+        cout<<t1.profitByTour()<<endl;
+    } else if (test_case_n == 2) {
+        cout << "Testing Agency c-tor, display function:"<<endl;
+
+        Agency agency;
+
+        cin>>name;
+        agency.setName(name);
+        int numTours;
+        cin>>numTours;
+        for (int j = 0; j < numTours; ++j) {
+            cin>>dest>>dur>>pr>>pass;
+            agency.addTour(Tour(dest, dur, pr, pass));
+        }
+
+        agency.display();
+
+
+    } else if (test_case_n == 3) {
+        cout << "Testing static field in Tour:" <<endl;
+
+        Agency agency [10];
+        int n;
+        cin >> n;
+
+        for (int i = 0; i < n ; ++i) {
+            cin>>name;
+            agency[i].setName(name);
+            int numTours;
+            cin>>numTours;
+            for (int j = 0; j < numTours; ++j) {
+                cin>>dest>>dur>>pr>>pass;
+                agency[i].addTour(Tour(dest, dur, pr, pass));
+
+
+            }
+
+        }
+
+        cout<<"Total number of tours: "<<Tour::getNumTours()<<endl;
+
+
+
+    } else if (test_case_n == 4) {
+        Agency agency [10];
+        int n;
+        cin >> n;
+
+        for (int i = 0; i < n ; ++i) {
+            cin>>name;
+            agency[i].setName(name);
+            int numTours;
+            cin>>numTours;
+            for (int j = 0; j < numTours; ++j) {
+                cin>>dest>>dur>>pr>>pass;
+                agency[i].addTour(Tour(dest, dur, pr, pass));
+            }
+        }
+
+        findBestAgency(agency, n);
+    }
+
+
+    return 0;
+
+}
+
+
+
+
+
+
+-------------------------------
 
 #include <iostream>
 #include <cstring>
