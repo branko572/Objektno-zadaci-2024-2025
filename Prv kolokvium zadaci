@@ -482,6 +482,309 @@ Define a global function best() that takes an array of BookStore objects and the
 
 
 
+POTOCNA VERZIJA:
+
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+#include <cstring>
+
+
+using namespace std;
+
+//Да се дефинира класа Book, која репрезентира една книга. За класата Book се чуваат:
+//
+//Наслов (текстуална низа од 30 знаци)
+//
+//Сериски број (цел број)
+//
+//Тип на книга (енумерациски тип, стручна литература или роман)
+//
+//Цена (децимален број)
+
+enum Type{
+    academic,novel
+};
+
+
+class Book{
+private:
+
+//    Серискиот број е единствен за секоја книга, неговата почетна вредност е 777550.
+//    Да се обезбеди секвенцијално генерирање на овој број, така што првата книга ќе има сериски број 777551, втората 777552, третата 777553 итн. (5 поени)
+    char title[30];
+    int serial;
+    Type type;
+    float price;
+    static int OBJECT;
+public:
+    Book(){
+        ::strcpy(title,"w");
+        serial=0;
+        type=novel;
+        price=0;
+    }
+
+
+    Book(const char *title, Type type, double price)  {
+        ::strcpy(this->title,title);
+        this->serial=777550+OBJECT;
+        this->type=type;
+        this->price=price;
+        OBJECT++;
+    }
+
+//    За оваа класа да се обезбедат потребните конструктори и set/get методи. (5 поени)
+
+    const char *getTitle() const {
+        return title;
+    }
+
+    int getSerial() const {
+        return serial;
+    }
+
+    void setSerial(int serial) {
+        this->serial = serial;
+    }
+
+
+    Type getType() const {
+        return type;
+    }
+
+    void setType(Type type) {
+        Book::type = type;
+    }
+
+    double getPrice() const {
+        return price;
+    }
+
+    void setPrice(float price) {
+        Book::price = price;
+    }
+
+    static int getObject() {
+        return OBJECT;
+    }
+
+    static void setObject(int object) {
+        OBJECT = object;
+    }
+
+
+    void print() const{
+        cout<<serial<<" - "<<title<<" ";
+        if(type==academic){
+            cout<<"academic"<<" ";
+        } else{
+            cout<<"novel"<<" ";
+        }
+        cout<<price<<endl;
+
+    }
+
+//    Да се имплементира метод print() со кој ќе се печатат информациите за секој објект во формат: [сериски број] - [наслов] [тип] [цена] (5 поени)
+
+    void increasePrice(float amount) {
+        price += amount;
+    }
+
+};
+
+
+int Book::OBJECT=0;
+
+//Потоа да се дефинира класа BookStore, во која се чуваат информации за:
+
+class BookStore{
+private:
+//Име (текстуална низа од 20 знаци)
+//Листа од книги (обична низа со максимум 100 објекти од класата Book)
+//Број на книги (број на елементи во низата од книги, иницијално е 0)
+    Book books[100];
+    int numBooks;
+    char name[20];
+public:
+    BookStore(){
+        ::strcpy(name,"w");
+        numBooks=0;
+    }
+    BookStore(const char *name)  {
+        ::strcpy(this->name,name);
+        this->numBooks=0;
+    }
+
+//За оваа класа да се дефинираат потребните конструктори, деструктор (ако е потребен), set и get методи. (5 поени)
+
+
+    const Book *getBooks() const {
+        return books;
+    }
+
+    int getNumBooks() const {
+        return numBooks;
+    }
+
+    void setNumBooks(int numBooks) {
+        BookStore::numBooks = numBooks;
+    }
+
+    const char *getName() const {
+        return name;
+    }
+
+//Да се имплементира метод print() во формат: [име] и потоа сите книги поединечно (види форматот од методот Book::print). (5 поени)
+
+    void print() {
+        cout << name << endl;
+        for (int i = 0; i < numBooks; ++i) {
+            books[i].print();
+        }
+    }
+
+
+
+    //    Да се имплементира метод addBook(const Book&) за додавање нова книга во продавницата.
+//    Книгите се менаџираат според нивниот наслов, односно не смее да се дозволи додавање книга со ист наслов повеќе од еднаш. (10 поени)
+   void addBook(const Book& book){
+        for (int i = 0; i < numBooks; ++i) {
+           if(::strcmp(books[i].getTitle(),book.getTitle())==0){
+               return;
+           }
+       }
+        if(numBooks<100){
+            books[numBooks++]=book;
+        }
+    }
+
+    //    Да се дефинира метод greaterThan(const BookStore&) кој ќе споредува дали едната продавница има повеќе книги од другата. (5 поени)
+    bool greaterThan(const BookStore& other){
+        if(numBooks>other.numBooks){
+            return true;
+        }else{
+           return false;
+        }
+    }
+
+//    Да се дефинира метод void createMarketPrice() - со кој продавницата генерира продажни цени на сите книги.
+//    Продажните цени се пресметуваат во зависност од тоа за каков тип на литература станува збор:
+
+    void createMarketPrice() {
+        for (int i = 0; i < numBooks; ++i) {
+            if (books[i].getType() == academic) {
+                books[i].increasePrice(books[i].getPrice() * 0.05);
+            } else if (books[i].getType() == novel) {
+                books[i].increasePrice(books[i].getPrice() * 0.03);
+            }
+        }
+    }
+};
+
+//Да се дефинира глобална функција best() - која прима низа од објекти од класатa BookStore и бројот на продавници,
+//а ја враќа онаа продавница која има најмногу книги.
+//Доколку повеќе продавници имаат ист број на книги, се враќа првата најдена. (5 поени)
+
+BookStore best(BookStore books[], int n) {
+    int index = -1;
+    int max = -1;
+    bool isDuplicate = false;
+
+    for (int i = 0; i < n; ++i) {
+        isDuplicate = false;
+
+        for (int j = 0; j < i; ++j) {
+            if (strcmp(books[i].getName(), books[j].getName()) == 0) {
+                isDuplicate = true;
+                break;
+            }
+        }
+
+        if (isDuplicate) {
+            continue;
+        }
+
+        if (books[i].getNumBooks() > max) {
+            max = books[i].getNumBooks();
+            index = i;
+        }
+    }
+
+    if (index == -1) {
+        // No bookstore found
+        throw std::runtime_error("No bookstore found.");
+    }
+
+    return books[index];
+}
+
+
+int main() {
+    // Create some books
+    Book b1("C++ Programming", academic, 1000);
+    Book b2("The Great Gatsby", novel, 500);
+    Book b3("Linear Algebra", academic, 800);
+    Book b4("1984", novel, 400);
+    Book b5("The Great Gatsby", novel, 550); // Duplicate title
+
+    // Create bookstores
+    BookStore s1("CityBooks");
+    BookStore s2("EduReads");
+
+    // Add books to bookstore s1
+    s1.addBook(b1);
+    s1.addBook(b2);
+    s1.addBook(b5); // Should not be added (duplicate title)
+
+    // Add books to bookstore s2
+    s2.addBook(b3);
+    s2.addBook(b4);
+
+    // Print bookstores before market price update
+    cout << "--- BEFORE PRICE UPDATE ---" << endl;
+    s1.print();
+    s2.print();
+
+    // Apply market prices
+    s1.createMarketPrice();
+    s2.createMarketPrice();
+
+    // Print bookstores after price update
+    cout << "\n--- AFTER PRICE UPDATE ---" << endl;
+    s1.print();
+    s2.print();
+
+    // Compare bookstores
+    cout << "\n--- COMPARISON ---" << endl;
+    if (s1.greaterThan(s2)) {
+        cout << s1.getName() << " has more books than " << s2.getName() << endl;
+    } else {
+        cout << s2.getName() << " has more or equal books than " << s1.getName() << endl;
+    }
+
+    // Create an array of bookstores (including a duplicate name)
+    BookStore stores[3] = {s1, s2, BookStore("CityBooks")}; // Third one is duplicate name
+
+    // Find the best bookstore
+    cout << "\n--- BEST BOOKSTORE ---" << endl;
+    BookStore bestStore = best(stores, 3);
+    bestStore.print();
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+-----------------------------
+
 #include <iostream>
 #include <cstring>
 using namespace std;
