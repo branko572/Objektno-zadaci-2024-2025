@@ -1,0 +1,877 @@
+Довршете ја класата MultipleChoiceQuestion за претставување на прашање на тест со избор на еден од повеќе понудени одговори.
+
+Во класата треба да се чуваат информации за:
+
+буквата пред точниот одговор (еден знак, default вредност 'A')
+
+поените кои може да се освојат доколку се одговори прашањето точно (цел број, default вредност 1)
+
+За класата да се дефинираат:
+
+Конструктори: default конструктор, конструктор само со точен одговор, конструктор со точен одговор и поени
+
+Метод float answer(char choice) кој ќе симулира одговарање на прашањето со избор на буква:
+
+Доколку одговорот е точен, се добиваат сите поени
+
+Доколку одговорот е неточен, се добиваат ¼ негативни поени од предвидените
+
+Complete the class MultipleChoiceQuestion for representing a multiple choice test question.
+
+The class should store:
+
+the letter of the correct answer (a single character, default value 'A')
+
+The number of points that can be earned for a correct answer (integer, default value 1)
+
+Define:
+
+Constructors: default constructor, constructor with correct answer only, and constructor with correct answer and points
+
+Method float answer(char choice) which simulates answering the question by choosing a letter:
+
+If the answer is correct, full points are awarded
+
+If the answer is incorrect, ¼ negative points from the total are awarded
+
+For example:
+
+Input	Result
+2 C 5
+3
+4 A
+Constructor with 2 arguments test
+print() method test
+Correct answer: C Points: 5
+answer(A) method test
+-1.25
+2 C 5
+3
+4 C
+Constructor with 2 arguments test
+print() method test
+Correct answer: C Points: 5
+answer(C) method test
+5
+
+
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class MultipleChoiceQuestion {
+private:
+    char correctAnswer;
+    int points;
+
+public:
+
+    MultipleChoiceQuestion() : correctAnswer('A'), points(1) {}
+
+
+    MultipleChoiceQuestion(char correct) : correctAnswer(correct), points(1) {}
+
+
+    MultipleChoiceQuestion(char correct, int p) : correctAnswer(correct), points(p) {}
+
+    void print() {
+        cout << "Correct answer: " << correctAnswer << " Points: " << points << endl;
+    }
+
+    float answer(char choice) {
+        if (choice == correctAnswer) {
+            return points;
+        } else {
+            return -points * 0.25f;
+        }
+    }
+};
+
+int main() {
+    MultipleChoiceQuestion mcq;
+
+    int testCase;
+    char correctAnswer;
+    int points;
+    while (cin >> testCase) {
+        if (testCase == 1) {
+            cout << "Constructor with 1 argument test" << endl;
+            cin >> correctAnswer;
+            mcq = MultipleChoiceQuestion(correctAnswer);
+        } else if (testCase == 2) {
+            cout << "Constructor with 2 arguments test" << endl;
+            cin >> correctAnswer >> points;
+            mcq = MultipleChoiceQuestion(correctAnswer, points);
+        } else if (testCase == 3) {
+            cout << "print() method test" << endl;
+            mcq.print();
+        } else {
+            char answer;
+            cin >> answer;
+            cout << "answer(" << answer << ") method test" << endl;
+            cout << mcq.answer(answer) << endl;
+        }
+    }
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Да се дефинира класа Robot, која чува податоци за робот од истражувачка колонија. Класата Robot се состои од следните полиња:
+
+Име (текстуална низа до 50 знаци)
+Батерија (цел број – проценти на полнење)
+Активен статус (boolean)
+Цена (double)
+Категорија (енумерациски тип: explorer, worker или scientist)
+За оваа класа да се обезбедат потребните конструктори и get/set методи.
+
+Да се имплементира метода print() кој ќе ги печати информациите за еден робот во следниот формат:
+
+[име] ([категорија]) - Battery: [батерија] - Price: [цена]$ - Status: [ON|OFF]
+
+Да се имплементира метода void toggleActiveState(), кој го менува статусот на роботот – доколку е активен, станува неактивен и обратно.
+
+Да се имплементира метода void chargeBattery(int amount), кој ja зголемува батеријата на роботот за дадена вредност во проценти. (нема да има случај кога се надминува 100%)
+
+
+
+Да се дефинира класата Colony, во која се чуваат следните информации:
+
+Име (текстуална низа до 50 знаци)
+Идентификациски број (цел број)
+Листа на роботи (низа со максимум 150 објекти од класата Robot)
+Број на роботи (иницијално е 0)
+За оваа класа да се дефинираат потребните конструктори, деструктор и get/set методи.
+
+Идентификацискиот број за секоја колонија е единствен и неговата почетна вредност е 5000. Да се обезбеди генерирање на овој број така што првата колонија има идентификациски број 4999 (5000-1), втората колонија 4997 (4999-2), третата колонија 4994 (4997-3), четвртата 4990 (4994-4) итн...
+
+Да се имплементира методa print(), кој ги печати информациите за една колонија во следниот формат:
+
+[Идентификациски број]: [Име]
+Robots:
+[печатење на сите роботи]
+
+Да се имплементираат следните методи во класата Colony:
+
+addRobot(const Robot&) - за додавање на нов робот во колонијата. Со роботите се управува на следниот начин: не смее да се дозволи додавање на робот со исто име и иста категорија. Доколку се обидеме да додадеме таков робот, на екран да се испише: "Robot already exists!"
+void toggleAllRobotsNotInCategory(Category category), кој го менува статусот на сите роботи во колонијата кои не припаѓаат на таа категорија (од активен во неактивен и обратно).
+void chargeAllRobotsByCategory(int amount, Category category), каде ќе се зголеми батеријата за amount % на сите роботи од дадената категорија.
+Да се дефинира глобална функција:
+
+Colony& smallestColony(Colony *colonies, int n)
+
+која прима низа од објекти од класата Colony и бројот на колонии. Како резултат, функцијата враќа која колонија има најмалку роботи. Доколку повеќе колонии имаат ист број на роботи, да се врати последната од нив.
+
+------------------------------------------
+
+
+
+Define a class Robot that stores data about a robot in an exploration colony. The Robot class consists of the following fields:
+
+Name (character array of 50 characters)
+Battery (integer – percentage of charge)
+Active status (boolean)
+Price (double)
+Category (enumeration type: explorer, worker or scientist)
+Provide the necessary constructors and get/set methods for this class.
+
+Implement a print() method that will print information about a robot in the following format:
+
+[name] ([category]) - Battery: [battery] - Price: [price]$ - Status: [ON|OFF]
+
+Implement a method void toggleActiveState() that changes the status of the robot – if it is active, it becomes inactive and vice versa.
+
+Implement a method void chargeBattery(int amount) that increases the robot’s battery by a given percentage. (there will be no case where it exceeds 100%)
+
+
+
+Define the Colony class, which stores the following information:
+
+Name (character array of 50 characters)
+Identification number (integer)
+List of robots (an array with a maximum of 150 objects of the Robot class)
+Number of robots (initially 0)
+Define the necessary constructors, destructor, and get/set methods for this class.
+
+The identification number for each colony is unique and its initial value is 5000. To ensure the generation of this number so that the first colony has an identification number of 4999 (5000-1), the second colony 4997 (4999-2), the third colony 4994 (4997-3), the fourth 4990 (4994-4) etc...
+
+To implement the print() method, which prints information about a colony in the following format:
+
+[Identification number]: [Name]
+Robots:
+[print all robots]
+
+Implement the following methods in the Colony class:
+
+addRobot(const Robot&) - to add a new robot to the colony. Robots are managed in the following way: adding a robot with the same name and category is forbidden. If we try to add such a robot, the following message should be displayed on the screen: "Robot already exists!"
+void toggleAllRobotsNotInCategory(Category category), which changes the status of all robots in the colony that do not belong to that category (from active to inactive and vice versa).
+void chargeAllRobotsByCategory(int amount, Category category), which will increase the battery by amount % of all robots of the given category.
+Define a global function:
+
+Colony& smallestColony(Colony *colonies, int n)
+
+which receives an array of objects of the Colony class and the number of colonies. As a result, the function returns which colony has the fewest robots. If multiple colonies have the same number of robots, return the last one.
+
+
+For example:
+
+Input	Result
+0
+TESTING ROBOT CONSTRUCTORS
+TEST PASSED
+1
+TESTING ROBOT print()
+Alpha (explorer) - Battery: 50 - Price: 1200$ - Status: ON
+Beta (scientist) - Battery: 30 - Price: 850.5$ - Status: OFF
+TEST PASSED
+
+
+
+
+
+
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+enum Category { explorer, worker, scientist };
+
+class Robot {
+private:
+    char name[50];
+    int battery;
+    bool active;
+    double price;
+    Category category;
+
+public:
+    Robot() {
+        strcpy(name, "");
+        battery = 0;
+        active = false;
+        price = 0.0;
+        category = explorer;
+    }
+
+    Robot(const char* n, int b, bool a, double p, Category c) {
+        strcpy(name, n);
+        battery = b;
+        active = a;
+        price = p;
+        category = c;
+    }
+
+    Robot(const Robot& other) {
+        strcpy(name, other.name);
+        battery = other.battery;
+        active = other.active;
+        price = other.price;
+        category = other.category;
+    }
+
+    const char* getName() const { return name; }
+    int getBattery() const { return battery; }
+    bool isActive() const { return active; }
+    double getPrice() const { return price; }
+    Category getCategory() const { return category; }
+
+    void setName(const char* n) { strcpy(name, n); }
+    void setBattery(int b) { battery = b; }
+    void setActive(bool a) { active = a; }
+    void setPrice(double p) { price = p; }
+    void setCategory(Category c) { category = c; }
+
+    void print() const {
+        cout << name << " (";
+        if (category == explorer) cout << "explorer";
+        else if (category == worker) cout << "worker";
+        else cout << "scientist";
+        cout << ") - Battery: " << battery
+             << " - Price: " << price << "$ - Status: "
+             << (active ? "ON" : "OFF") << endl;
+    }
+
+    void toggleActiveState() {
+        active = !active;
+    }
+
+    void chargeBattery(int amount) {
+        battery += amount;
+        if (battery > 100) battery = 100;
+    }
+};
+
+class Colony {
+private:
+    char name[50];
+    int id;
+    Robot robots[150];
+    int robotCount;
+    static int idGenerator;
+    static int subtractValue;
+
+public:
+    Colony(const char* n) {
+        strcpy(name, n);
+        robotCount = 0;
+        id = idGenerator;
+        subtractValue++;
+        idGenerator -= subtractValue;
+    }
+
+    Colony(const Colony& other) {
+        strcpy(name, other.name);
+        id = other.id;
+        robotCount = other.robotCount;
+        for (int i = 0; i < robotCount; i++) {
+            robots[i] = other.robots[i];
+        }
+    }
+
+    ~Colony() {}
+
+    const char* getName() const { return name; }
+    int getId() const { return id; }
+    int getRobotCount() const { return robotCount; }
+
+    void setName(const char* n) { strcpy(name, n); }
+
+    void print() const {
+        cout << id << ": " << name << endl;
+        cout << "Robots:" << endl;
+        for (int i = 0; i < robotCount; i++) {
+            robots[i].print();
+        }
+    }
+
+    void addRobot(const Robot& r) {
+        for (int i = 0; i < robotCount; i++) {
+            if (strcmp(robots[i].getName(), r.getName()) == 0 &&
+                robots[i].getCategory() == r.getCategory()) {
+                cout << "Robot already exists!" << endl;
+                return;
+            }
+        }
+        if (robotCount < 150) {
+            robots[robotCount++] = r;
+        }
+    }
+
+    void toggleAllRobotsNotInCategory(Category c) {
+        for (int i = 0; i < robotCount; i++) {
+            if (robots[i].getCategory() != c) {
+                robots[i].toggleActiveState();
+            }
+        }
+    }
+
+    void chargeAllRobotsByCategory(int amount, Category c) {
+        for (int i = 0; i < robotCount; i++) {
+            if (robots[i].getCategory() == c) {
+                robots[i].chargeBattery(amount);
+            }
+        }
+    }
+};
+
+int Colony::idGenerator = 4999;
+int Colony::subtractValue = 1;
+
+Colony& smallestColony(Colony *colonies, int n) {
+    Colony* result = &colonies[0];
+    for (int i = 1; i < n; i++) {
+        if (colonies[i].getRobotCount() <= result->getRobotCount()) {
+            result = &colonies[i];
+        }
+    }
+    return *result;
+}
+
+
+
+//DO NOT CHANGE THE MAIN METHOD
+int main() {
+    int testCase;
+    cin >> testCase;
+
+    if (testCase == 0) {
+        cout << "TESTING ROBOT CONSTRUCTORS" << endl;
+        Robot d1;
+        Robot d2("Rover", 75, true, 1299.50, explorer);
+        Robot d3("Scout", 40, false, 799.99, worker);
+        Robot d4("Probe", 20, true, 499.99, scientist);
+        Robot d5(d2);
+        cout << "TEST PASSED" << endl;
+    } else if (testCase == 1) {
+        cout << "TESTING ROBOT print()" << endl;
+        Robot d1("Alpha", 50, true, 1200.0, explorer);
+        Robot d2("Beta", 30, false, 850.5, scientist);
+        d1.print();
+        d2.print();
+        cout << "TEST PASSED" << endl;
+    } else if (testCase == 2) {
+        cout << "TESTING ROBOT toggleActiveState()" << endl;
+        Robot d("Gamma", 60, false, 600.0, worker);
+        d.print();
+        d.toggleActiveState();
+        cout << "After toggle: ";
+        d.print();
+        d.toggleActiveState();
+        cout << "After toggle: ";
+        d.print();
+        cout << "TEST PASSED" << endl;
+    } else if (testCase == 3) {
+        cout << "TESTING ROBOT chargeBattery()" << endl;
+        Robot d("Delta", 30, true, 1000.0, explorer);
+        d.print();
+        d.chargeBattery(5);
+        d.print();
+        d.chargeBattery(15);
+        d.print();
+        cout << "TEST PASSED" << endl;
+    } else if (testCase == 4) {
+        cout << "TESTING COLONY CONSTRUCTOR" << endl;
+        Colony h1("Alpha Colony");
+        h1.print();
+        Colony h2(h1);
+        h2.print();
+        cout << "TEST PASSED" << endl;
+    } else if (testCase == 5) {
+        cout << "TESTING addRobot() and print()" << endl;
+        Colony col("Mars Base");
+        Robot r1("R1", 50, true, 500.0, explorer);
+        Robot r2("R2", 40, false, 450.0, worker);
+        Robot r3("R3", 40, true, 450.0, worker);
+        Robot r4("R3", 30, true, 400.0, scientist);
+        Robot r5("R2", 35, true, 420.0, worker);
+        col.addRobot(r1);
+        col.addRobot(r2);
+        col.addRobot(r3);
+        col.addRobot(r4);
+        col.addRobot(r5);
+        col.print();
+        Colony col2(col);
+        col2.print();
+        cout << "TEST PASSED" << endl;
+    } else if (testCase == 6) {
+        cout << "TESTING toggleAllRobotsNotInCategory()" << endl;
+        Colony col("Luna Outpost");
+        Robot a("A", 10, false, 200.0, explorer);
+        Robot b("B", 20, true, 300.0, worker);
+        Robot c("C", 30, false, 400.0, scientist);
+        Robot d("D", 40, true, 500.0, explorer);
+        Robot e("E", 50, false, 600.0, scientist);
+        Robot f("F", 60, false, 550.0, explorer);
+        Robot g("G", 70, true, 530.0, worker);
+        col.addRobot(a);
+        col.addRobot(b);
+        col.addRobot(c);
+        col.addRobot(d);
+        col.addRobot(e);
+        col.addRobot(f);
+        col.addRobot(g);
+        col.print();
+        col.toggleAllRobotsNotInCategory(worker);
+        col.print();
+        col.toggleAllRobotsNotInCategory(worker);
+        col.print();
+        col.toggleAllRobotsNotInCategory(scientist);
+        col.print();
+        cout << "TEST PASSED" << endl;
+    } else if (testCase == 7) {
+        cout << "TESTING chargeAllRobotsByCategory()" << endl;
+        Colony col("Titan Station");
+        Robot a("A", 10, false, 200.0, explorer);
+        Robot b("B", 20, true, 300.0, worker);
+        Robot c("C", 30, false, 400.0, scientist);
+        Robot d("D", 40, true, 500.0, explorer);
+        Robot e("E", 50, false, 600.0, scientist);
+        Robot f("F", 60, false, 550.0, explorer);
+        Robot g("G", 70, true, 530.0, worker);
+        col.addRobot(a);
+        col.addRobot(b);
+        col.addRobot(c);
+        col.addRobot(d);
+        col.addRobot(e);
+        col.addRobot(f);
+        col.addRobot(g);
+        col.chargeAllRobotsByCategory(5, explorer);
+        col.print();
+        col.chargeAllRobotsByCategory(10, worker);
+        col.print();
+        cout << "TEST PASSED" << endl;
+    } else if (testCase == 8) {
+        cout << "TESTING smallestColony()" << endl;
+        Colony arr[3] = {
+                Colony("ColA"),
+                Colony("ColB"),
+                Colony("ColC")
+        };
+        Robot x("X", 10, true, 100.0, worker);
+        Robot y("Y", 20, false, 110.0, explorer);
+        arr[0].addRobot(x);
+        arr[1].addRobot(x);
+        arr[1].addRobot(y);
+        arr[2].addRobot(y);
+        Colony &best1 = smallestColony(arr, 3);
+        best1.print();
+
+        Robot z("Z", 15, true, 120.0, explorer);
+        arr[0].addRobot(z);
+        arr[0].addRobot(y);
+        arr[2].addRobot(x);
+        arr[2].addRobot(z);
+        Colony &best2 = smallestColony(arr, 3);
+        best2.print();
+        cout << "TEST PASSED" << endl;
+    } else if (testCase == 9) {
+        cout << "TESTING smallestColony()" << endl;
+        Colony arr[3] = {
+                Colony("ColA"),
+                Colony("ColB"),
+                Colony("ColC")
+        };
+        Robot x("X", 10, true, 100.0, worker);
+        Robot y("Y", 20, false, 110.0, explorer);
+        arr[0].addRobot(x);
+        arr[2].addRobot(x);
+        arr[1].addRobot(y);
+        arr[1].addRobot(x);
+        Colony &best1 = smallestColony(arr, 3);
+        best1.print();
+
+        Robot z("Z", 15, true, 120.0, explorer);
+        arr[2].addRobot(z);
+        arr[2].addRobot(y);
+        arr[2].addRobot(z);
+        Colony &best2 = smallestColony(arr, 3);
+        best2.print();
+        cout << "TEST PASSED" << endl;
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+Да се дефинира класа Satellite која ќе чува информации за:
+
+name (име на сателитот, низа од 50 знаци)
+
+operatorCountry (држава оператор на сателитот, низа од 50 знаци)
+
+За оваа класа да се обезбедат потребните конструктори, како и соодветни get и set методи.
+
+Да се имплементира метод print() што печати име и држава на сателитот, во формат:
+
+[име на сателит] (држава оператор)
+
+
+Да се дефинира класа Mission која ќе чува информации за:
+
+satellite (објект од класата Satellite)
+
+missionDate (датум на мисијата, низа од 10 знаци во формат dd.mm.yyyy)
+
+dataTransmitted (количина на пренесени податоци во терабајти, цел број)
+
+communicationStatus  (енумерациски тип CommunicationStatus: Failed, Partial, Success)
+
+Да се имплементираат потребните конструктори, како и соодветни get и set методи.
+
+Да се имплементирa метод print() што  печати информации за мисијата во следниот формат:
+
+
+Mission Date: [датум на мисијата]
+Mission Details:
+Satellite: [име на сателит] (земја оператор)
+Data Transmitted: [количина на пренесени податоци] TB
+Communication Status: [статус на комуникација]
+
+
+
+Во рамките на main функцијата, треба да се чита цел број N (max 100), а потоа информации за N мисии. Читањето на една мисија е во следниот формат:
+
+datum
+ime_na_satelit
+drzava_operator
+preneseni_podatoci
+status
+
+
+Пример влез:
+
+5
+17.05.1957
+Sputnik 1
+Russia
+150
+1
+
+мисии…
+
+20.07.1977
+Voyager 1
+USA
+95
+2
+
+
+
+Да се испечатат сите мисии. Форматот на печатење да се види од тест примерите.
+
+----
+
+
+Define a class Satellite which will store the following information:
+
+name (name of the satellite, a character array of 50 characters)
+
+operatorCountry (operator country of the satellite, a character array of 50 characters)
+
+For this class, provide the necessary constructors, as well as appropriate getter and setter methods.
+
+Implement the print() method that prints the satellite's name and operator country in the format:
+
+[satellite name] (operator country)
+
+
+Define a class Mission which will store the following information:
+
+satellite (an object of the class Satellite)
+
+missionDate (date of the mission, a character array of 10 characters in the format dd.mm.yyyy)
+
+dataTransmitted (amount of data transmitted in terabytes, integer)
+
+communicationStatus (enumeration type CommunicationStatus: Failed, Partial, Success)
+
+
+Provide the necessary constructors, as well as appropriate getter and setter methods.
+
+Implement the print() method that prints information about the mission in the following format:
+
+Mission Date: [mission date]
+Mission Details:
+Satellite: [satellite name] (operator country)
+Data Transmitted: [amount of data transmitted] TB
+Communication Status: [communication status]
+
+
+In the main function, read an integer N (max 100), then, read information for N missions. The input for a single mission should be in the following format:
+
+date
+satellite_name
+operator_country
+transmitted_data
+status
+
+Example input:
+
+
+5
+17.05.1957
+Sputnik 1
+Russia
+150
+1
+
+missions…
+
+20.07.1977
+Voyager 1
+USA
+95
+2
+
+
+Print out all the missions. The print format can be seen in the test cases.
+For example:
+
+Input	Result
+3
+15.05.2023
+Voyager 2
+USA
+110
+2
+18.06.2023
+Galileo
+European Union
+100
+1
+29.07.2023
+Kepler
+USA
+50
+0
+Mission Date: 15.05.2023
+Mission Details:
+Satellite: Voyager 2 (USA)
+Data Transmitted: 110 TB
+Communication Status: Success
+
+Mission Date: 18.06.2023
+Mission Details:
+Satellite: Galileo (European Union)
+Data Transmitted: 100 TB
+Communication Status: Partial
+
+Mission Date: 29.07.2023
+Mission Details:
+Satellite: Kepler (USA)
+Data Transmitted: 50 TB
+Communication Status: Failed
+
+
+
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+enum CommunicationStatus { Failed, Partial, Success };
+
+class Satellite {
+private:
+    char name[50];
+    char operatorCountry[50];
+
+public:
+    Satellite() {
+        strcpy(name, "");
+        strcpy(operatorCountry, "");
+    }
+
+    Satellite(const char* _name, const char* _country) {
+        strcpy(name, _name);
+        strcpy(operatorCountry, _country);
+    }
+
+    void setName(const char* _name) {
+        strcpy(name, _name);
+    }
+
+    void setOperatorCountry(const char* _country) {
+        strcpy(operatorCountry, _country);
+    }
+
+    const char* getName() const {
+        return name;
+    }
+
+    const char* getOperatorCountry() const {
+        return operatorCountry;
+    }
+
+    void print() const {
+        cout << name << " (" << operatorCountry << ")";
+    }
+};
+
+class Mission {
+private:
+    Satellite satellite;
+    char missionDate[11];
+    int dataTransmitted;
+    CommunicationStatus status;
+
+public:
+    Mission() {
+        strcpy(missionDate, "");
+        dataTransmitted = 0;
+        status = Failed;
+    }
+
+    Mission(const Satellite& _sat, const char* _date, int _data, CommunicationStatus _status) {
+        satellite = _sat;
+        strcpy(missionDate, _date);
+        dataTransmitted = _data;
+        status = _status;
+    }
+
+    void setSatellite(const Satellite& _sat) {
+        satellite = _sat;
+    }
+
+    void setMissionDate(const char* _date) {
+        strcpy(missionDate, _date);
+    }
+
+    void setDataTransmitted(int _data) {
+        dataTransmitted = _data;
+    }
+
+    void setCommunicationStatus(CommunicationStatus _status) {
+        status = _status;
+    }
+
+    void print() const {
+        cout << "Mission Date: " << missionDate << endl;
+        cout << "Mission Details:" << endl;
+        cout << "Satellite: ";
+        satellite.print();
+        cout << endl;
+        cout << "Data Transmitted: " << dataTransmitted << " TB" << endl;
+        cout << "Communication Status: ";
+        if (status == Failed) cout << "Failed" << endl;
+        else if (status == Partial) cout << "Partial" << endl;
+        else if (status == Success) cout << "Success" << endl;
+        cout << endl;
+    }
+};
+
+int main() {
+    int N;
+    cin >> N;
+    cin.ignore();
+
+    Mission missions[100];
+
+    for (int i = 0; i < N; i++) {
+        char date[11], satName[50], country[50];
+        int data, status;
+
+        cin.getline(date, 11);
+        cin.getline(satName, 50);
+        cin.getline(country, 50);
+        cin >> data >> status;
+        cin.ignore();
+
+        Satellite sat(satName, country);
+        missions[i] = Mission(sat, date, data, (CommunicationStatus)status);
+    }
+
+    for (int i = 0; i < N; i++) {
+        missions[i].print();
+    }
+
+    return 0;
+}
+
+
+
