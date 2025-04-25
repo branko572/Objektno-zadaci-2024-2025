@@ -1,0 +1,519 @@
+ Да се креира класа за претставување на планинарско друштво во која ќе се чуваат информации за името на друштвото (динамички алоцирана низа од знаци), број на поминати тури (цел број) и број на членови во планинарското друштво (цел број). За оваа класа да се напише:
+
+оператор + за собирање на две друштва што како резултат враќа друштво со број на членови еднаков на збирот од членовите од двете друштва, а останатите атрибути на резултантното друштво ги добиваат вредностите на соодветните атрибути од друштвото со поголем број на членови
+
+оператори >, < за споредба во однос на бројот на членови во планинарските друштва
+
+оператор << за печатење на информациите за планинарското друштво
+
+Да се напише функција што на влез прима низа од планинарски друштва и вкупен број на друштва во низата и го печати планинарското друштво што има најголем број на членови.
+
+Input
+Bistra
+12
+75
+Kozuv
+15
+89
+Kozjak
+2
+15
+
+Result
+Ime: Kozuv Turi: 15 Clenovi: 164
+Najmnogu clenovi ima planinarskoto drustvo: Ime: Kozuv Turi: 15 Clenovi: 89
+  int main()
+{
+    PlDrustvo drustva[3];
+    PlDrustvo pl;
+    for (int i=0;i<3;i++)
+    {
+        char ime[100];
+        int brTuri;
+        int brClenovi;
+        cin>>ime;
+        cin>>brTuri;
+        cin>>brClenovi;
+        PlDrustvo p(ime,brTuri,brClenovi);
+        drustva[i] = p;
+
+    }
+
+    pl = drustva[0] + drustva[1];
+    cout<<pl;
+
+    najmnoguClenovi(drustva, 3);
+
+    return 0;
+}
+
+
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class PlDrustvo {
+private:
+    char* ime;
+    int brTuri;
+    int brClenovi;
+
+public:
+    PlDrustvo() {
+        ime = new char[1];
+        ime[0] = '\0';
+        brTuri = 0;
+        brClenovi = 0;
+    }
+
+    PlDrustvo(const char* i, int t, int c) {
+        ime = new char[strlen(i) + 1];
+        strcpy(ime, i);
+        brTuri = t;
+        brClenovi = c;
+    }
+
+    PlDrustvo(const PlDrustvo& other) {
+        ime = new char[strlen(other.ime) + 1];
+        strcpy(ime, other.ime);
+        brTuri = other.brTuri;
+        brClenovi = other.brClenovi;
+    }
+
+    PlDrustvo& operator=(const PlDrustvo& other) {
+        if (this != &other) {
+            delete[] ime;
+            ime = new char[strlen(other.ime) + 1];
+            strcpy(ime, other.ime);
+            brTuri = other.brTuri;
+            brClenovi = other.brClenovi;
+        }
+        return *this;
+    }
+
+    ~PlDrustvo() {
+        delete[] ime;
+    }
+
+    int getBrClenovi() const {
+        return brClenovi;
+    }
+
+    // оператор +
+    PlDrustvo operator+(const PlDrustvo& other) const {
+        if (brClenovi >= other.brClenovi) {
+            return PlDrustvo(ime, brTuri, brClenovi + other.brClenovi);
+        } else {
+            return PlDrustvo(other.ime, other.brTuri, brClenovi + other.brClenovi);
+        }
+    }
+
+    // оператор >
+    bool operator>(const PlDrustvo& other) const {
+        return brClenovi > other.brClenovi;
+    }
+
+    // оператор <
+    bool operator<(const PlDrustvo& other) const {
+        return brClenovi < other.brClenovi;
+    }
+
+    // оператор <<
+    friend ostream& operator<<(ostream& os, const PlDrustvo& p) {
+        os << "Ime: " << p.ime << " Turi: " << p.brTuri << " Clenovi: " << p.brClenovi << endl;
+        return os;
+    }
+};
+
+// функција за наоѓање на друштво со најмногу членови
+void najmnoguClenovi(PlDrustvo* niza, int n) {
+    PlDrustvo max = niza[0];
+    for (int i = 1; i < n; i++) {
+        if (niza[i] > max) {
+            max = niza[i];
+        }
+    }
+    cout << "Najmnogu clenovi ima planinarskoto drustvo: " << max;
+}
+
+int main() {
+    PlDrustvo drustva[3];
+    PlDrustvo pl;
+    for (int i = 0; i < 3; i++) {
+        char ime[100];
+        int brTuri;
+        int brClenovi;
+        cin >> ime >> brTuri >> brClenovi;
+        PlDrustvo p(ime, brTuri, brClenovi);
+        drustva[i] = p;
+    }
+
+    pl = drustva[0] + drustva[1];
+    cout << pl;
+
+    najmnoguClenovi(drustva, 3);
+
+    return 0;
+}
+
+
+
+
+
+
+
+Да се дефинира класата Atom со приватни членки:
+
+symbol - симбол на атомот (низа од најмногу 2 знаци);
+weight - атомска тежина (реален број).
+Дополнително да се преоптовари операторот ==. Притоа два атоми се еднакви ако се означени со ист симбол.
+
+Следно, да се дефинира класата Molecule со приватни членки:
+
+atoms - градбени атоми на молекулата (динамички алоцирана низа од атоми)*;
+n - број на атоми во молекулата (цел број).
+Класата располага со функција getMolecularWeight која ја враќа сумата од атомските тежини од градбените атоми на молекулата.
+
+За двете класи да се напишат соодветните get методи и конструктори без и со аргументи, како и copy конструктори и деструктори. Да се преоптоварат операторите за доделување = во двете класи.
+
+Програмата треба да овозможи печатење на молекулите со операторот << во формат прикажан на тест примерите. **
+
+Атомите и молекулите може да се соединуваат со помош на + операторот. Резултатот на ова соединување е нова молекула со атомите од поединечните атоми/молекули. Дел од ова барање е веќе имплементирано. Потребно е да дефинирате уште едно преоптоварување на операторот + каде ќе соединувате исклучиво две молекули.
+
+Забелешки:
+
+Не правете промени во дадениот код, само проширете го онаму каде е назначено.
+*Се признаваат и решенија без алоцирање на динамичка меморија.
+**Делумно се признаваат и решенија каде само атомите се испечатени без да се пребројуваат.
+
+Input
+4
+H + O H .
+Cl C + O H .
+END
+
+Result
+Complete/Full test.
+HOH --- 17.999
+ClCOH --- 64.4576
+
+Input
+4
+C C C C C + H H H H H H H H H H .
+H C H H + Cl C O O .
+H H + O .
+C H H H + N C .
+END
+
+Result
+Complete/Full test.
+C5H10 --- 70.058
+HCH2ClCO2 --- 94.4662
+H2O --- 17.999
+CH3NC --- 41.0282                                                                                                                                         
+
+
+int main() {
+    int testcase;
+    cin >> testcase;
+    switch (testcase) {
+        case 0: {
+            cout << "Testing Atom constructors and operators ==, =" << endl;
+            Atom a1("H", 1.001);
+            Atom a2("O", 15.997);
+            Atom a3(a1);
+            cout << (a1 == a3) << endl << (a2 == a3) << endl;
+            a3 = a2;
+            cout << (a1 == a3) << endl << (a2 == a3) << endl;
+            break;
+        }
+        case 1: {
+            cout << "Testing Molecule constructors, methods and operator =" << endl;
+            Atom atoms[5];
+            Atom c("C", 12.0096);
+            Atom h("H", 1.001);
+            atoms[0] = c;
+            for (int i = 0; i < 4; ++i) {
+                atoms[i + 1] = h;
+            }
+
+            Molecule m1(atoms, 5);
+            Molecule m2(atoms, 3);
+            Molecule m3(m1);
+
+            cout << m1.getMolecularWeight() << endl << m2.getMolecularWeight() << endl;
+            cout << m3.getMolecularWeight() << endl;
+
+            m3 = m2;
+            cout << m3.getMolecularWeight() << endl;
+            break;
+        }
+        case 2: {
+            cout << "Testing operator << on Molecule" << endl;
+
+            Atom c("C", 12.0096);
+            Atom h("H", 1.001);
+            Atom o("O", 15.997);
+            Atom cl("Cl", 35.45);
+
+            Atom atoms0[3];
+            atoms0[0] = h;
+            atoms0[1] = h;
+            atoms0[2] = o;
+            cout << Molecule(atoms0, 3) << endl;  // H20
+
+            atoms0[0] = h;
+            atoms0[1] = o;
+            atoms0[2] = h;
+            cout << Molecule(atoms0, 3) << endl;  // HOH
+
+            Atom atoms[5];
+            atoms[0] = c;
+            for (int i = 0; i < 4; ++i) atoms[i + 1] = h;
+
+            cout << Molecule(atoms, 5) << endl;  // CH4
+
+            Atom atoms1[10];
+
+            for (int i = 0; i < 10; ++i) {
+                if (i < 3) atoms1[i] = c;
+                else if (i < 8) atoms1[i] = h;
+                else if (i == 8) atoms1[i] = cl;
+                else atoms1[i] = o;
+            }
+
+            cout << Molecule(atoms1, 10) << endl;  // C3H5ClO
+
+            cout << endl << "[Formatting help: Print the atoms" << endl << "in the order of the atoms array." << endl;
+            cout << "Consecutive atoms that are" << endl << "the same should be counted." << endl << "Then print the molecule weight.]" << endl;
+            break;
+        }
+        case 3: {
+            cout << "Testing operator + on class Molecule." << endl;
+            Molecule m1, m2;
+            Atom c("C", 12.0096);
+            Atom h("H", 1.001);
+            Atom o("O", 15.997);
+            Atom cl("Cl", 35.45);
+            Atom n("N", 14.006);
+
+            m1 = c + h ;
+            m2 = cl + n + o;
+            cout << (m1 + m2) << endl;
+            break;
+        }
+        case 4: {
+            cout << "Complete/Full test." << endl;
+            Molecule m, m1, m2;
+            Atom c("C", 12.0096);
+            Atom h("H", 1.001);
+            Atom o("O", 15.997);
+            Atom cl("Cl", 35.45);
+            Atom n("N", 14.006);
+
+            char input[10];
+            int i = 1;
+            while (true) {
+                i = i == 0 ? 1 : 0;
+                cin >> input;
+                if (input[0] == 'E') return 0;
+                while (input[0] != '.' && input[0] != '+') {
+                    switch (input[0]) {
+                        case 'H':
+                            m = m + h;
+                            break;
+                        case 'O':
+                            m = m + o;
+                            break;
+                        case 'N':
+                            m = m + n;
+                            break;
+                        case 'C':
+                            if (input[1] == 'l') m = m + cl;
+                            else m = m + c;
+                            break;
+                    }
+                    cin >> input;
+                }
+                if (i == 0) {
+                    m1 = m;
+                    m = Molecule();
+                } else {
+                    m2 = m;
+                    cout << (m1 + m2) << endl;
+                    m = Molecule();
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+#include <iostream>
+#include <cstring>
+#include <iomanip>
+using namespace std;
+
+class Atom {
+private:
+    char symbol[3]; // најмногу 2 знаци + null terminator
+    double weight;
+
+public:
+    Atom() {
+        symbol[0] = '\0';
+        weight = 0.0;
+    }
+
+    Atom(const char* s, double w) {
+        strncpy(symbol, s, 2);
+        symbol[2] = '\0';
+        weight = w;
+    }
+
+    Atom(const Atom& other) {
+        strcpy(symbol, other.symbol);
+        weight = other.weight;
+    }
+
+    Atom& operator=(const Atom& other) {
+        if (this != &other) {
+            strcpy(symbol, other.symbol);
+            weight = other.weight;
+        }
+        return *this;
+    }
+
+    const char* getSymbol() const {
+        return symbol;
+    }
+
+    double getWeight() const {
+        return weight;
+    }
+
+    bool operator==(const Atom& other) const {
+        return strcmp(symbol, other.symbol) == 0;
+    }
+};
+
+class Molecule {
+private:
+    Atom* atoms;
+    int n;
+
+public:
+    Molecule() {
+        atoms = nullptr;
+        n = 0;
+    }
+
+    Molecule(Atom* a, int _n) {
+        n = _n;
+        atoms = new Atom[n];
+        for (int i = 0; i < n; i++) {
+            atoms[i] = a[i];
+        }
+    }
+
+    Molecule(const Molecule& other) {
+        n = other.n;
+        atoms = new Atom[n];
+        for (int i = 0; i < n; i++) {
+            atoms[i] = other.atoms[i];
+        }
+    }
+
+    ~Molecule() {
+        delete[] atoms;
+    }
+
+    Molecule& operator=(const Molecule& other) {
+        if (this != &other) {
+            delete[] atoms;
+            n = other.n;
+            atoms = new Atom[n];
+            for (int i = 0; i < n; i++) {
+                atoms[i] = other.atoms[i];
+            }
+        }
+        return *this;
+    }
+
+    double getMolecularWeight() const {
+        double sum = 0.0;
+        for (int i = 0; i < n; i++) {
+            sum += atoms[i].getWeight();
+        }
+        return sum;
+    }
+
+    // Печатење на молекула во формат: симболи со броење + тежина
+    friend ostream& operator<<(ostream& os, const Molecule& m) {
+        for (int i = 0; i < m.n; ) {
+            int count = 1;
+            const char* currSym = m.atoms[i].getSymbol();
+            while (i + count < m.n && m.atoms[i + count] == m.atoms[i]) {
+                count++;
+            }
+            os << currSym;
+            if (count > 1)
+                os << count;
+            i += count;
+        }
+        os << " --- " << fixed << setprecision(4) << m.getMolecularWeight() << endl;
+        return os;
+    }
+
+    // Molecule + Atom
+    friend Molecule operator+(const Molecule& mol, const Atom& atom) {
+        Atom* newAtoms = new Atom[mol.n + 1];
+        for (int i = 0; i < mol.n; i++) {
+            newAtoms[i] = mol.atoms[i];
+        }
+        newAtoms[mol.n] = atom;
+        Molecule result(newAtoms, mol.n + 1);
+        delete[] newAtoms;
+        return result;
+    }
+
+    // Atom + Molecule
+    friend Molecule operator+(const Atom& atom, const Molecule& mol) {
+        Atom* newAtoms = new Atom[mol.n + 1];
+        newAtoms[0] = atom;
+        for (int i = 0; i < mol.n; i++) {
+            newAtoms[i + 1] = mol.atoms[i];
+        }
+        Molecule result(newAtoms, mol.n + 1);
+        delete[] newAtoms;
+        return result;
+    }
+
+    // Molecule + Molecule
+    friend Molecule operator+(const Molecule& m1, const Molecule& m2) {
+        Atom* newAtoms = new Atom[m1.n + m2.n];
+        for (int i = 0; i < m1.n; i++) {
+            newAtoms[i] = m1.atoms[i];
+        }
+        for (int i = 0; i < m2.n; i++) {
+            newAtoms[m1.n + i] = m2.atoms[i];
+        }
+        Molecule result(newAtoms, m1.n + m2.n);
+        delete[] newAtoms;
+        return result;
+    }
+};
+
+
+
+
+
+
+
+
