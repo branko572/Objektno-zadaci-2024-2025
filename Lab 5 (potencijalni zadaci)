@@ -361,71 +361,57 @@ int main() {
 using namespace std;
 
 class Atom {
-private:
-    char symbol[3]; // најмногу 2 знаци + null terminator
+    char symbol[3];
     double weight;
-
 public:
-    Atom() {
-        symbol[0] = '\0';
-        weight = 0.0;
+    Atom(const char *symbol = "", double weight = 0.0) {
+        strncpy(this->symbol, symbol, 2);
+        this->symbol[2] = '\0';
+        this->weight = weight;
     }
 
-    Atom(const char* s, double w) {
-        strncpy(symbol, s, 2);
-        symbol[2] = '\0';
-        weight = w;
+    Atom(const Atom &other) {
+        strcpy(this->symbol, other.symbol);
+        this->weight = other.weight;
     }
 
-    Atom(const Atom& other) {
-        strcpy(symbol, other.symbol);
-        weight = other.weight;
-    }
-
-    Atom& operator=(const Atom& other) {
+    Atom& operator=(const Atom &other) {
         if (this != &other) {
-            strcpy(symbol, other.symbol);
-            weight = other.weight;
+            strcpy(this->symbol, other.symbol);
+            this->weight = other.weight;
         }
         return *this;
     }
 
-    const char* getSymbol() const {
-        return symbol;
+    bool operator==(const Atom &other) const {
+        return strcmp(this->symbol, other.symbol) == 0;
     }
 
-    double getWeight() const {
-        return weight;
-    }
-
-    bool operator==(const Atom& other) const {
-        return strcmp(symbol, other.symbol) == 0;
-    }
+    const char* getSymbol() const { return symbol; }
+    double getWeight() const { return weight; }
 };
 
 class Molecule {
-private:
-    Atom* atoms;
+    Atom *atoms;
     int n;
-
 public:
     Molecule() {
         atoms = nullptr;
         n = 0;
     }
 
-    Molecule(Atom* a, int _n) {
-        n = _n;
-        atoms = new Atom[n];
-        for (int i = 0; i < n; i++) {
-            atoms[i] = a[i];
+    Molecule(Atom *atoms, int n) {
+        this->n = n;
+        this->atoms = new Atom[n];
+        for (int i = 0; i < n; ++i) {
+            this->atoms[i] = atoms[i];
         }
     }
 
-    Molecule(const Molecule& other) {
+    Molecule(const Molecule &other) {
         n = other.n;
         atoms = new Atom[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; ++i) {
             atoms[i] = other.atoms[i];
         }
     }
@@ -434,12 +420,12 @@ public:
         delete[] atoms;
     }
 
-    Molecule& operator=(const Molecule& other) {
+    Molecule& operator=(const Molecule &other) {
         if (this != &other) {
             delete[] atoms;
             n = other.n;
             atoms = new Atom[n];
-            for (int i = 0; i < n; i++) {
+            for (int i = 0; i < n; ++i) {
                 atoms[i] = other.atoms[i];
             }
         }
@@ -447,70 +433,200 @@ public:
     }
 
     double getMolecularWeight() const {
-        double sum = 0.0;
-        for (int i = 0; i < n; i++) {
+        double sum = 0;
+        for (int i = 0; i < n; ++i) {
             sum += atoms[i].getWeight();
         }
         return sum;
     }
 
-    // Печатење на молекула во формат: симболи со броење + тежина
-    friend ostream& operator<<(ostream& os, const Molecule& m) {
-        for (int i = 0; i < m.n; ) {
-            int count = 1;
-            const char* currSym = m.atoms[i].getSymbol();
-            while (i + count < m.n && m.atoms[i + count] == m.atoms[i]) {
-                count++;
-            }
-            os << currSym;
-            if (count > 1)
-                os << count;
-            i += count;
-        }
-        os << " --- " << fixed << setprecision(4) << m.getMolecularWeight() << endl;
-        return os;
-    }
-
-    // Molecule + Atom
-    friend Molecule operator+(const Molecule& mol, const Atom& atom) {
-        Atom* newAtoms = new Atom[mol.n + 1];
-        for (int i = 0; i < mol.n; i++) {
-            newAtoms[i] = mol.atoms[i];
-        }
-        newAtoms[mol.n] = atom;
-        Molecule result(newAtoms, mol.n + 1);
-        delete[] newAtoms;
-        return result;
-    }
-
-    // Atom + Molecule
-    friend Molecule operator+(const Atom& atom, const Molecule& mol) {
-        Atom* newAtoms = new Atom[mol.n + 1];
-        newAtoms[0] = atom;
-        for (int i = 0; i < mol.n; i++) {
-            newAtoms[i + 1] = mol.atoms[i];
-        }
-        Molecule result(newAtoms, mol.n + 1);
-        delete[] newAtoms;
-        return result;
-    }
-
-    // Molecule + Molecule
-    friend Molecule operator+(const Molecule& m1, const Molecule& m2) {
-        Atom* newAtoms = new Atom[m1.n + m2.n];
-        for (int i = 0; i < m1.n; i++) {
-            newAtoms[i] = m1.atoms[i];
-        }
-        for (int i = 0; i < m2.n; i++) {
-            newAtoms[m1.n + i] = m2.atoms[i];
-        }
-        Molecule result(newAtoms, m1.n + m2.n);
-        delete[] newAtoms;
-        return result;
-    }
+    friend Molecule operator+(const Molecule &m, const Atom &a);
+    friend Molecule operator+(const Molecule &m1, const Molecule &m2);
+    friend Molecule operator+(const Atom &a1, const Atom &a2);
+    friend ostream& operator<<(ostream &out, const Molecule &m);
 };
 
+// Atom + Atom → Molecule
+Molecule operator+(const Atom &a1, const Atom &a2) {
+    Atom temp[2] = { a1, a2 };
+    return Molecule(temp, 2);
+}
 
+// Molecule + Atom
+Molecule operator+(const Molecule &m, const Atom &a) {
+    Atom *newAtoms = new Atom[m.n + 1];
+    for (int i = 0; i < m.n; ++i) {
+        newAtoms[i] = m.atoms[i];
+    }
+    newAtoms[m.n] = a;
+    Molecule result(newAtoms, m.n + 1);
+    delete[] newAtoms;
+    return result;
+}
+
+// Molecule + Molecule
+Molecule operator+(const Molecule &m1, const Molecule &m2) {
+    Atom *newAtoms = new Atom[m1.n + m2.n];
+    for (int i = 0; i < m1.n; ++i) {
+        newAtoms[i] = m1.atoms[i];
+    }
+    for (int i = 0; i < m2.n; ++i) {
+        newAtoms[m1.n + i] = m2.atoms[i];
+    }
+    Molecule result(newAtoms, m1.n + m2.n);
+    delete[] newAtoms;
+    return result;
+}
+
+// Print Molecule
+ostream& operator<<(ostream &out, const Molecule &m) {
+    for (int i = 0; i < m.n; ) {
+        int count = 1;
+        while (i + count < m.n && m.atoms[i] == m.atoms[i + count]) {
+            count++;
+        }
+        out << m.atoms[i].getSymbol();
+        if (count > 1) out << count;
+        i += count;
+    }
+    out << " --- " << fixed << setprecision(4) << m.getMolecularWeight() << endl;
+    return out;
+}
+
+
+// Test harness provided in your description
+int main() {
+    int testcase;
+    cin >> testcase;
+    switch (testcase) {
+        case 0: {
+            cout << "Testing Atom constructors and operators ==, =" << endl;
+            Atom a1("H", 1.001);
+            Atom a2("O", 15.997);
+            Atom a3(a1);
+            cout << (a1 == a3) << endl << (a2 == a3) << endl;
+            a3 = a2;
+            cout << (a1 == a3) << endl << (a2 == a3) << endl;
+            break;
+        }
+        case 1: {
+            cout << "Testing Molecule constructors, methods and operator =" << endl;
+            Atom atoms[5];
+            Atom c("C", 12.0096);
+            Atom h("H", 1.001);
+            atoms[0] = c;
+            for (int i = 0; i < 4; ++i) {
+                atoms[i + 1] = h;
+            }
+
+            Molecule m1(atoms, 5);
+            Molecule m2(atoms, 3);
+            Molecule m3(m1);
+
+            cout << m1.getMolecularWeight() << endl << m2.getMolecularWeight() << endl;
+            cout << m3.getMolecularWeight() << endl;
+
+            m3 = m2;
+            cout << m3.getMolecularWeight() << endl;
+            break;
+        }
+        case 2: {
+            cout << "Testing operator << on Molecule" << endl;
+
+            Atom c("C", 12.0096);
+            Atom h("H", 1.001);
+            Atom o("O", 15.997);
+            Atom cl("Cl", 35.45);
+
+            Atom atoms0[3];
+            atoms0[0] = h;
+            atoms0[1] = h;
+            atoms0[2] = o;
+            cout << Molecule(atoms0, 3) << endl;  // H2O
+
+            atoms0[0] = h;
+            atoms0[1] = o;
+            atoms0[2] = h;
+            cout << Molecule(atoms0, 3) << endl;  // HOH
+
+            Atom atoms[5];
+            atoms[0] = c;
+            for (int i = 0; i < 4; ++i) atoms[i + 1] = h;
+
+            cout << Molecule(atoms, 5) << endl;  // CH4
+
+            Atom atoms1[10];
+
+            for (int i = 0; i < 10; ++i) {
+                if (i < 3) atoms1[i] = c;
+                else if (i < 8) atoms1[i] = h;
+                else if (i == 8) atoms1[i] = cl;
+                else atoms1[i] = o;
+            }
+
+            cout << Molecule(atoms1, 10) << endl;  // C3H5ClO
+
+            break;
+        }
+        case 3: {
+            cout << "Testing operator + on class Molecule." << endl;
+            Molecule m1, m2;
+            Atom c("C", 12.0096);
+            Atom h("H", 1.001);
+            Atom o("O", 15.997);
+            Atom cl("Cl", 35.45);
+            Atom n("N", 14.006);
+
+            m1 = c + h ;
+            m2 = cl + n + o;
+            cout << (m1 + m2) << endl;
+            break;
+        }
+        case 4: {
+            cout << "Complete/Full test." << endl;
+            Molecule m, m1, m2;
+            Atom c("C", 12.0096);
+            Atom h("H", 1.001);
+            Atom o("O", 15.997);
+            Atom cl("Cl", 35.45);
+            Atom n("N", 14.006);
+
+            char input[10];
+            int i = 1;
+            while (true) {
+                i = i == 0 ? 1 : 0;
+                cin >> input;
+                if (input[0] == 'E') return 0;
+                while (input[0] != '.' && input[0] != '+') {
+                    switch (input[0]) {
+                        case 'H':
+                            m = m + h;
+                            break;
+                        case 'O':
+                            m = m + o;
+                            break;
+                        case 'N':
+                            m = m + n;
+                            break;
+                        case 'C':
+                            if (input[1] == 'l') m = m + cl;
+                            else m = m + c;
+                            break;
+                    }
+                    cin >> input;
+                }
+                if (i == 0) {
+                    m1 = m;
+                    m = Molecule();
+                } else {
+                    m2 = m;
+                    cout << (m1 + m2) << endl;
+                    m = Molecule();
+                }
+            }
+        }
+    }
+}
 
 
 
